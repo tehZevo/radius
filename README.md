@@ -1,6 +1,8 @@
 # Radius
 
 ## TODO
+- Fix having to refresh to see profile updates (or is this just ipfs being slow?)
+- Show hashicon + id when hovering over profile picture
 - Add timestamps to posts
 - Generate key from mnemonic
   - Generate keys from Python

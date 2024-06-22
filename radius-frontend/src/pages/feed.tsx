@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import * as radius from "../services/radius"
+import Post from "../components/post"
 
 export default function Feed()
 {
@@ -16,11 +17,17 @@ export default function Feed()
     fetchFeed()
   }, [])
 
-  
+  //TODO: need key for posts
   return (
     <div>
         <>
-          {feed.map(e => <p key={e}>{e}</p>)}
+          {feed.map(e => (
+            <Post
+              authorId="TODO: need id on post in backend"
+              authorProfile={{}}
+              post={e}
+            />
+          ))}
         </>
     </div>
   )
