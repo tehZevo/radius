@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import * as radius from "../services/radius"
 import Post from "../components/post"
 import Box from "../components/box"
+import FollowButton from "../components/followButton"
 
 export default function Profile()
 {
@@ -17,12 +18,6 @@ export default function Profile()
     setProfile(profile)
   }
   
-  async function follow()
-  {
-    await radius.follow(userId)
-  }
-  
-  //TODO: avoid double render
   useEffect(() => {
     fetchProfile()
   }, [])
@@ -34,7 +29,7 @@ export default function Profile()
           <Box raised={false}>
             <Box>{profile.name} ({userId})</Box>
             <Box>Distance: {distance ?? "unknown"}</Box>
-            <button onClick={follow}>Follow</button>
+            <FollowButton userId={userId} />
           </Box>
           <Box direction="column">
             <span>Following:</span>

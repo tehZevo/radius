@@ -2,7 +2,8 @@
 
 export default function Box({direction="row", raised=true, span=false, children})
 {
-  //TODO: clean MUI/MDL shadow
+  //TODO: "stack" children on top of each other?
+  
   const style =
   {
     padding: raised ? "12px" : "0px",
