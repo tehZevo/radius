@@ -4,8 +4,6 @@ from dataclasses import dataclass
 import dataclasses
 import tempfile
 import base64
-import time
-from threading import Thread
 import random
 from operator import itemgetter
 import traceback
@@ -14,11 +12,39 @@ from dataclasses_json import dataclass_json
 
 from ipfs_utils import read, write, publish, node_id, key_import, key_gen, key_rm, key_list, key_to_node_id
 from keys import generate_key, load_key
-from radius import Profile, make_public_post, get_profile, get_profiles, follow, save_profile
+from radius import Profile, make_public_post, get_profile, get_profiles, follow, save_profile, fetch_profiles_in_radius
 
-FETCHER_THREADS = 3
-#min seconds to wait between fetches per fetcher thread
-FETCH_INTERVAL = 10
+def min_profile_distance(a, b):
+    if a is None and b is None:
+        return None
+    if a is None:
+        return b
+    if b is None:
+        return a
+    
+    return min(a, b)
+
+def upsert_profile_based_on_distance(profiles, id, profile, distance):
+    if profile is None:
+        raise ValueError(f"Profile with id {id} was None. Not upserting.")
+    
+    profiles = profiles.copy()
+    
+    #upsert with minimum distance
+    if id in profiles:
+        existing_profile = profiles[id]
+        profiles[id] = {
+            "profile": profile,
+            "distance": min_profile_distance(existing_profile["distance"], distance)
+        }
+        return profiles
+    
+    profiles[id] = {
+        "profile": profile,
+        "distance": distance
+    }
+    
+    return profiles
 
 class Client:
     def load_key(path, password, clear_first=False):
@@ -57,15 +83,9 @@ class Client:
             print("Profile fetched.")
         
         self.profiles = dict()
-        self.upsert_profile(self.id, self.profile, 0)
+        self.profiles = upsert_profile_based_on_distance(self.profiles, self.id, self.profile, 0)
         self.radius = 3 #TODO: make param
         
-        self.threads = []
-        
-        self._end_threads = False
-        
-        self.start_threads()
-    
     def wipe(self, yes_i_really_mean_it=False):
         if not yes_i_really_mean_it:
             raise ValueError("You didn't really mean it.")
@@ -75,17 +95,7 @@ class Client:
         self.profile = Profile.new()
         save_profile(self.key_name, self.profile)
         self.profiles = dict()
-        self.upsert_profile(self.id, self.profile, 0)
-    
-    def min_distance(self, a, b):
-        if a is None and b is None:
-            return None
-        if a is None:
-            return b
-        if b is None:
-            return a
-        
-        return min(a, b)
+        self.profiles = upsert_profile_based_on_distance(self.profiles, self.id, self.profile, 0)
     
     #TODO: what to do when the link between you and someone else breaks (unfollowed)?
     def upsert_profile(self, id, profile, distance):
@@ -110,49 +120,7 @@ class Client:
     def fetch_profile(self, id):
         profile = get_profile(id)
         print(profile)
-        self.upsert_profile(id, profile, None)
-    
-    def profiles_within_radius(self, radius):
-        return {id: profile
-            for id, profile in self.profiles.items()
-            if profile["distance"] is not None and profile["distance"] <= radius}
-    
-    def fetcher_thread(self):
-        while self._end_threads:
-            time_remaining = FETCH_INTERVAL
-            try:
-                start_time = time.time()
-                #TODO: better would be to grab all profile ids and their followers within a given radius
-                profiles = self.profiles_within_radius(self.radius - 1)
-                #TODO: naive: this oversamples people who are followed more
-                #pick random id from known profiles:
-                profile = random.choice(list(profiles.values()))
-                profile, distance = itemgetter("profile", "distance")(profile)
-                
-                if len(profile.following) == 0:
-                    pass
-                else:
-                    next_id = random.choice(profile.following)
-                    next_profile = get_profile(next_id)
-                    self.upsert_profile(next_id, next_profile, distance + 1)
-                
-                end_time = time.time()
-                time_taken = end_time - start_time
-                time_remaining = max(0, FETCH_INTERVAL - time_taken)
-            except Exception as e:
-                print("Exception in fetcher thread:")
-                traceback.format_exc()
-            time.sleep(time_remaining)
-    
-    def start_threads(self):
-        self.threads = []
-        for _ in range(FETCHER_THREADS):
-            t = Thread(target=self.fetcher_thread, daemon=True)
-            t.start()
-            self.threads.append(t)
-    
-    def stop_threads(self):
-        self._end_threads = True
+        self.profiles = upsert_profile_based_on_distance(self.profiles, id, profile, None)
     
     def make_public_post(self, content):
         #TODO: is this thread safe?
@@ -170,7 +138,7 @@ class Client:
     
     def get_public_feed(self):
         #TODO: filter self posts?
-        profiles = self.profiles_within_radius(self.radius)
+        profiles = fetch_profiles_in_radius(self.id, self.radius)
         profiles = [profile["profile"] for profile in profiles.values()]
         posts = [profile.public_posts for profile in profiles]
         posts = [

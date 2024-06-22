@@ -69,9 +69,6 @@ def login(data):
 
 def logout(_):
     global client
-    
-    client.stop_threads()
-    
     client = None
 
 def follow(id):

@@ -25,3 +25,5 @@ export const setName = (name) => ppcl("setName", name)
 export const getFeed = () => ppcl("getFeed")
 
 export const follow = (id) => ppcl("follow", id)
+
+export const post = (content) => ppcl("post", content)

@@ -1,6 +1,8 @@
 import os
 import json
 from dataclasses import dataclass
+from collections import deque
+import time
 import dataclasses
 import tempfile
 import base64
@@ -55,6 +57,36 @@ def get_profile(id):
     #TODO: dont swallow all exceptions
     except:
         return None
+
+#BFS search
+#TODO: allow a cache to be passed in so they arent refetched?
+def fetch_profiles_in_radius(start_id, radius, verbose=False):
+    explored = set()
+    profiles = dict()
+    horizon = deque([(start_id, 0)]) #id, distance
+    
+    while len(horizon) > 0:
+        id, distance = horizon.popleft()
+        #TODO: handle unresolvable
+        t = time.time()
+        profile = get_profile(id)
+        if verbose:
+            print(id, distance, "fetch took", time.time() - t)
+        profiles[id] = {
+            "profile": profile,
+            "distance": distance
+        }
+        explored.add(id)
+        
+        for next_id in profile.following:
+            #skip already explored and neighbors with too high of a distance
+            if next_id in explored:
+                continue
+            if distance + 1 > radius:
+                continue
+            horizon.append((next_id, distance + 1))
+            
+    return profiles
 
 def save_profile(key_name, profile):
     cid = write(profile.to_json())

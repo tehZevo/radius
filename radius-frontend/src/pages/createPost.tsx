@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import * as radius from "../services/radius"
 
 export default function CreatePost()
 {
-  async function onSubmit()
+  const navigate = useNavigate();
+  
+  async function onSubmit(e)
   {
     e.preventDefault()
     const formData = new FormData(e.target)

@@ -9,7 +9,6 @@ export default function CreatePost()
   
   async function fetchProfile()
   {
-    console.log(userId)
     const profile = await radius.getProfile(userId)
     setProfile(profile)
   }

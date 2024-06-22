@@ -1,3 +1,7 @@
+clean up repo
+
+add timestamps to posts
+
 "radius"
 your feed filled with posts from a selectable radius of followers
 

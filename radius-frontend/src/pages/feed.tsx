@@ -20,7 +20,7 @@ export default function Feed()
   return (
     <div>
         <>
-          {feed.map(e => <p key={e}>e</p>)}
+          {feed.map(e => <p key={e}>{e}</p>)}
         </>
     </div>
   )
