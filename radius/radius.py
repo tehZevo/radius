@@ -25,7 +25,7 @@ RESOLVE_TIMEOUT = "5s"
 @dataclass_json
 @dataclass
 class Profile:
-    id: str #TODO: verify this
+    id: str #TODO: verify this or inject it since we SHOULD already know it
     name: str
     public_posts: list
     private_posts: list
@@ -44,6 +44,27 @@ class Post:
     def new(content, timestamp=None):
         timestamp = int(time.time()) if timestamp is None else timestamp
         return Post(content, timestamp)
+
+@dataclass_json
+@dataclass
+class Author:
+    id: str
+    name: str
+    distance: int
+
+@dataclass_json
+@dataclass
+class PostWithAuthor:
+    post: Post
+    author: Author
+    
+    def new(post, author_profile_with_distance):
+        author = author=Author(
+            id=author_profile_with_distance["profile"].id,
+            name=author_profile_with_distance["profile"].name,
+            distance=author_profile_with_distance["distance"]
+        )
+        return PostWithAuthor(post, author)
 
 def make_public_post(key_name, profile, content):
     post = Post.new(content)

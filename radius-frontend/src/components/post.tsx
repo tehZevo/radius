@@ -1,16 +1,25 @@
 import { useNavigate } from 'react-router-dom';
+import Box from "./box"
 
-export default function Post({authorId, authorProfile, post})
+export default function Post({post, author})
 {
-  const navigate = useNavigate();
-
+  const navigate = useNavigate()
+  // const {post, author} = postWithAuthor
+  // console.log(postWithAuthor)
+  
+  const authorInfo = author ? (
+    <Box raised={false}>
+      <a href={`/profile/${author.id}`}>{author.name}</a> ({author.id})
+      <span>Distance: {author.distance ?? "unknown"}</span>
+    </Box>
+  ) : null
+  
   return (
     <>
-      <div>
-        <a href={`/profile/${authorId}`}>Author: {authorProfile.name} ({authorId})</a>
-        <p>Timestamp: {post.timestamp}</p>
-        <p>Message: {post.content}</p>
-      </div>
+      <Box direction="column">
+        {authorInfo}
+        <span>{post.content} ({post.timestamp})</span>
+      </Box>
     </>
   )
 }

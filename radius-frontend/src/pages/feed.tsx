@@ -21,13 +21,12 @@ export default function Feed()
   return (
     <div>
         <>
-          {feed.map(e => (
-            <Post
-              authorId="TODO: need id on post in backend"
-              authorProfile={{}}
-              post={e}
-            />
-          ))}
+          {feed.map(e => {
+            const {post, author} = e;
+            console.log(e)
+            console.log(post, author)
+            return <Post post={post} author={author} />
+          })}
         </>
     </div>
   )

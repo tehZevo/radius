@@ -1,18 +1,9 @@
-import os
-import json
-from dataclasses import dataclass
 import dataclasses
-import tempfile
-import base64
-import random
 from operator import itemgetter
-import traceback
 
-from dataclasses_json import dataclass_json
-
-from radius.ipfs_utils import read, write, publish, node_id, key_import, key_gen, key_rm, key_list, key_to_node_id
-from radius.keys import generate_key, load_key
-from radius.radius import Profile, make_public_post, get_profile, get_profiles, follow, save_profile, fetch_profiles_in_radius
+from radius.ipfs_utils import key_import, key_rm, key_list, key_to_node_id
+from radius.keys import load_key
+from radius.radius import Profile, make_public_post, get_profile, follow, save_profile, fetch_profiles_in_radius, PostWithAuthor, Author
 
 def min_profile_distance(a, b):
     if a is None and b is None:
@@ -138,13 +129,13 @@ class Client:
     
     def get_public_feed(self):
         #TODO: filter self posts?
-        profiles = fetch_profiles_in_radius(self.id, self.radius)
-        profiles = [profile["profile"] for profile in profiles.values()]
-        posts = [profile.public_posts for profile in profiles]
-        posts = [
-            post
-            for sublist in posts
-            for post in sublist
-        ]
+        #TODO: mixin author data using PostWithAuthor
+        profiles = fetch_profiles_in_radius(self.id, self.radius).values()
+        
+        posts = []
+        for profile in profiles:
+            for post in profile["profile"].public_posts:
+                posts.append(PostWithAuthor.new(post, profile))
+                
         return posts
         

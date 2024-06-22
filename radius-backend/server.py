@@ -94,7 +94,9 @@ def set_radius(radius):
     print("Radius updated to", client.radius)
 
 def get_feed(_):
-    return client.get_public_feed()
+    posts = client.get_public_feed()
+    posts = [post.to_dict() for post in posts]
+    return posts
 
 def post(message):
     print("Posting message...")

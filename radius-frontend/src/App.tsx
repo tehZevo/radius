@@ -12,6 +12,7 @@ import Profile from "./pages/profile"
 import Settings from "./pages/settings"
 import Feed from "./pages/feed"
 import CreatePost from "./pages/createPost"
+import Box from "./components/box"
 
 const router = createBrowserRouter([
   {
@@ -47,10 +48,13 @@ export default function App() {
     //   <RouterProvider router={router} />
     // </React.StrictMode>
     <>
-      <div><a href="/feed">Feed</a></div>
-      <div><a href="/create-post">Create post</a></div>
-      <div><a href="/settings">Settings</a></div>
-      <RouterProvider router={router} />
+    <Box raised={false}>
+      <Box><a href="/profile">Profile</a></Box>
+      <Box><a href="/feed">Feed</a></Box>
+      <Box><a href="/create-post">Create post</a></Box>
+      <Box><a href="/settings">Settings</a></Box>
+    </Box>
+    <RouterProvider router={router} />
     </>
   );
 }
