@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import Box from "./box"
+import DistanceIcon from "./distanceIcon"
 
 export default function Post({post, author})
 {
@@ -10,7 +11,7 @@ export default function Post({post, author})
   const authorInfo = author ? (
     <Box raised={false}>
       <a href={`/profile/${author.id}`}>{author.name}</a> ({author.id})
-      <span>Distance: {author.distance ?? "unknown"}</span>
+      <DistanceIcon distance={author.distance} />
     </Box>
   ) : null
   

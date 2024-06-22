@@ -4,7 +4,7 @@ import * as radius from "../services/radius"
 import Post from "../components/post"
 import Box from "../components/box"
 
-export default function Profile()
+export default function FollowButton()
 {
   const {userId} = useParams()
   const [profile, setProfile] = useState()

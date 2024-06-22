@@ -6,9 +6,9 @@ import base64
 
 from dataclasses_json import dataclass_json
 
-from ipfs_utils import read, write, publish, node_id, key_import, key_gen, key_rm, key_list, key_to_node_id
-from keys import generate_key
-from radius import Profile, make_public_post, get_profiles, follow, save_profile
+from radius.ipfs_utils import read, write, publish, node_id, key_import, key_gen, key_rm, key_list, key_to_node_id
+from radius.keys import generate_key
+from radius.radius import Profile, make_public_post, get_profiles, follow, save_profile
 
 def gen_person(name):
     try:
@@ -16,10 +16,10 @@ def gen_person(name):
     except:
         pass
     
-    key = generate_key()
+    key, id = generate_key()
     key_import(name, key)
     profile = Profile.new()
-    id = key_to_node_id(name)
+    # id = key_to_node_id(name)
     
     save_profile(name, profile)
     

@@ -88,6 +88,17 @@ class Client:
         self.profiles = dict()
         self.profiles = upsert_profile_based_on_distance(self.profiles, self.id, self.profile, 0)
     
+    def get_recommended(self):
+        profiles = fetch_profiles_in_radius(self.id, self.radius)
+        #filter out people we already follow
+        #TODO: also make sure we don't recommend ourselves lol
+        #TODO: technically isnt this just people with distance > 1?
+        recommended = [(id, p["profile"], p["distance"]) for id, p in profiles.items() if p["profile"].id not in self.profile.following]
+        #TODO: sort (with score)
+        recommended = [(id, p, dist, 0) for id, p, dist in recommended]
+        
+        return recommended
+    
     #TODO: what to do when the link between you and someone else breaks (unfollowed)?
     def upsert_profile(self, id, profile, distance):
         if profile is None:

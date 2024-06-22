@@ -1,6 +1,5 @@
-import {useEffect} from "react"
 import Box from "./box"
-import useAccount from "../hooks/useAccount"
+import {useAccount} from "../hooks/radiusHooks"
 
 export default function TopBar() {
   const userId = useAccount()

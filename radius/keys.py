@@ -7,6 +7,8 @@ import base64
 
 from nacl import pwhash, secret, utils
 
+from radius.ipfs_utils import key_list
+
 HASHER = pwhash.argon2i
 KDF = HASHER.kdf
 OPS_LIMIT = HASHER.OPSLIMIT_SENSITIVE
@@ -18,6 +20,9 @@ def generate_key():
     
     name = str(uuid4())
     subprocess.run(["ipfs", "key", "gen", name])
+    #jank
+    keys = key_list()
+    id = [k for k in keys if k["Name"] == name][0]["Id"]
     key_path = os.path.join(tempfile.gettempdir(), name)
     subprocess.run(["ipfs", "key", "export", name, "-o", key_path])
     
@@ -29,7 +34,7 @@ def generate_key():
     #TODO: run in finally block
     subprocess.run(["ipfs", "key", "rm", name])
     
-    return key
+    return key, id
 
 def load_key(path, password):
     with open(path, "r") as f:
@@ -46,7 +51,7 @@ def load_key(path, password):
     return name, key
 
 def create_and_save_key(name, password, path):
-    key = generate_key()
+    key, id = generate_key()
     key, salt = encrypt_key(key, password)
     
     key = base64.b64encode(key).decode("utf8")
@@ -56,7 +61,8 @@ def create_and_save_key(name, password, path):
         f.write(json.dumps({
             "key": key,
             "name": name,
-            "salt": salt
+            "salt": salt,
+            "id": id
         }))
 
 def encrypt_key(key, password):

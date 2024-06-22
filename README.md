@@ -1,9 +1,11 @@
 # Radius
 
 ## TODO
-- Add poster information to post response
+- Fix first visit of profile from top bar having null/undefined id
+- Browse while you wait for your post to send
+- Increase TTL on IPNS publish
+- Verify ids on fetch, or just stop storing id inside profile altogether
 - Fix having to refresh to see profile updates (or is this just ipfs being slow?)
-- Add profile link to top bar
 - BE "distance between users" function
 - Show hashicon + id when hovering over profile picture
 - Generate key from mnemonic

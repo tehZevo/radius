@@ -1,6 +1,6 @@
 import argparse
 
-from keys import create_and_save_key
+from radius.keys import create_and_save_key
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", "--name", required=True)

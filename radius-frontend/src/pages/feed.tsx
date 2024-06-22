@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import * as radius from "../services/radius"
 import Post from "../components/post"
+import Box from "../components/box"
+import Recommended from "../components/recommended"
 
 export default function Feed()
 {
@@ -19,15 +21,16 @@ export default function Feed()
 
   //TODO: need key for posts
   return (
-    <div>
-        <>
-          {feed.map(e => {
-            const {post, author} = e;
-            console.log(e)
-            console.log(post, author)
-            return <Post post={post} author={author} />
-          })}
-        </>
-    </div>
+    <Box raised={false}>
+      <Box raised={false} direction="column">
+        {feed.map(e => {
+          const {post, author} = e;
+          console.log(e)
+          console.log(post, author)
+          return <Post post={post} author={author} />
+        })}
+      </Box>
+      <Recommended />
+    </Box>
   )
 }

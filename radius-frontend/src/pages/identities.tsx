@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
 import * as radius from "../services/radius"
+import IdentityCard from "../components/identityCard"
 
 export default function Identities()
 {
@@ -27,7 +28,11 @@ export default function Identities()
   return (
     <>
       <div>
-        {identities.map(e => <button key={e} onClick={() => login(e)}>{e}</button>)}
+        {identities.map(e => {
+          const {name, id} = e
+          //return <button key={e} onClick={() => login(e)}>{e}</button>
+          return <IdentityCard key={id} name={name} id={id}/>
+        })}
       </div>
     </>
   )

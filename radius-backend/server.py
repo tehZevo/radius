@@ -3,6 +3,7 @@ import time
 import argparse
 from operator import itemgetter
 from pathlib import Path
+import json
 
 from protopost import ProtoPost
 
@@ -21,7 +22,17 @@ def identity_path(key_name):
     return os.path.join(KEY_STORE_DIR, f"{key_name}.json")
 
 def get_identities(_):
-    return [Path(f).stem for f in os.listdir(KEY_STORE_DIR)]
+    #load all keys and extract their name and ids
+    identities = []
+    for key_file in os.listdir(KEY_STORE_DIR):
+        with open(os.path.join(KEY_STORE_DIR, key_file)) as f:
+            key = json.loads(f.read())
+            identities.append({
+                "name": key["name"],
+                "id": key["id"]
+            })
+    
+    return identities
 
 def has_identity(name):
     #TODO: if key with name is in key store dir, return true
@@ -95,6 +106,11 @@ def set_radius(radius):
 
 def get_feed(_):
     posts = client.get_public_feed()
+    #TODO: should we sort here or client?
+    
+    #TODO: idk why e.post is a dict but ok
+    posts.sort(key=lambda e: e.post["timestamp"], reverse=True)
+    
     posts = [post.to_dict() for post in posts]
     return posts
 
@@ -120,6 +136,15 @@ def get_profile(id):
 
 def set_radius(radius):
     client.radius = radius
+    
+def get_recommended(_):
+    recommended = client.get_recommended()
+    recommended = [{
+        "id": id,
+        "profile": p.to_dict(),
+        "distance": dist,
+        "score": score} for id, p, dist, score in recommended]
+    return recommended
 
 ProtoPost({
     "getClientId": lambda _: client.id,
@@ -131,6 +156,7 @@ ProtoPost({
     "wipe": wipe,
     "getProfile": get_profile,
     "getProfiles": get_profiles,
+    "getRecommended": get_recommended,
     "post": post,
     "login": login,
     "logout": logout,

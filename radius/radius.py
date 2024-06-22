@@ -1,16 +1,11 @@
-import os
-import json
 from dataclasses import dataclass
 from collections import deque
 import time
 import dataclasses
-import tempfile
-import base64
 
 from dataclasses_json import dataclass_json
 
-from radius.ipfs_utils import read, write, publish, resolve, node_id, key_import, key_gen, key_rm, key_list, key_to_node_id
-from radius.keys import generate_key, encrypt_key, decrypt_key
+from radius.ipfs_utils import read, write, publish, resolve
 
 #config
 #TODO: make params/env vars
@@ -19,7 +14,7 @@ DHT_RECORD_COUNT = 5
 #we get the latest version of their profile
 NOCACHE = True
 RESOLVE_AFTER_PUBLISH = False
-LIFETIME = "5m"
+LIFETIME = "1h"
 RESOLVE_TIMEOUT = "5s"
 
 @dataclass_json
@@ -98,9 +93,12 @@ def fetch_profiles_in_radius(start_id, radius, verbose=False):
     
     while len(horizon) > 0:
         id, distance = horizon.popleft()
-        #TODO: handle unresolvable
         t = time.time()
         profile = get_profile(id)
+        #failed to resolve, skip
+        if profile is None:
+            continue
+            
         if verbose:
             print(id, distance, "fetch took", time.time() - t)
         profiles[id] = {

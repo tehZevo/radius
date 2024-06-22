@@ -58,20 +58,18 @@ def read(path):
     
     return r.text #TODO: dont assume text
 
-#TODO: allow other keys than default to be used
 #TODO: allow custom lifetime
-def publish(key_name, path, lifetime="5m", resolve=False):
-    # print(resolve)
-    resolve = "true" if resolve else "false"
+def publish(key_name, path, lifetime="30m", resolve=False):
+    resolve = 1 if resolve else 0
     #TODO: implement timeout in api version
-    # r = requests.post(f"{IPFS_API_URL}/name/publish?arg={path}&key={key_name}&lifetime={lifetime}&reasolve={resolve}")
-    # if r.status_code != 200:
-    #     raise Exception(r.text)
-    # 
-    # r = r.json()
-    # return r["Name"]
-    # print(" ".join(["ipfs", "name", "publish", f"--resolve={resolve}", f"--key={key_name}", path]))
-    subprocess.run(["ipfs", "name", "publish", f"--resolve={resolve}", f"--key={key_name}", path])
+    r = requests.post(f"{IPFS_API_URL}/name/publish?arg={path}&key={key_name}&lifetime={lifetime}&reasolve={resolve}")
+    if r.status_code != 200:
+        raise Exception(r.text)
+    
+    r = r.json()
+    return r["Name"]
+    
+    # subprocess.run(["ipfs", "name", "publish", f"--resolve={resolve}", f"--key={key_name}", path])
     
 def resolve(name, nocache=False, record_count=16, timeout="30s"):
     nocache = "true" if nocache else False

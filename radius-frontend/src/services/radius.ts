@@ -31,3 +31,5 @@ export const post = (content) => ppcl("post", content)
 export const wipe = (sure) => ppcl("wipe", sure)
 
 export const account = () => ppcl("account")
+
+export const getRecommended = () => ppcl("getRecommended")
