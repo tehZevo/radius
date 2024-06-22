@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import * as radius from "../services/radius"
 import Post from "../components/post"
 import Box from "../components/box"
-import Recommended from "../components/recommended"
+import FeedSidebar from "../components/feedSidebar"
 
 export default function Feed()
 {
@@ -25,12 +25,10 @@ export default function Feed()
       <Box raised={false} direction="column">
         {feed.map(e => {
           const {post, author} = e;
-          console.log(e)
-          console.log(post, author)
           return <Post post={post} author={author} />
         })}
       </Box>
-      <Recommended />
+      <FeedSidebar />
     </Box>
   )
 }

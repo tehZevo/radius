@@ -5,3 +5,5 @@ import useFetcher from "./useFetcher"
 export const useAccount = (x) => useFetcher(() => radius.account(), x)
 
 export const useRecommended = (x) => useFetcher(() => radius.getRecommended(), x)
+
+export const useClientRadius = (x) => useFetcher(() => radius.getRadius(), x)

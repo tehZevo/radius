@@ -7,13 +7,11 @@ export default function useFetcher(routine, placeholder)
   async function doFetch(routine)
   {
     const value = await routine()
-    console.log("fetched", value)
     setValue(value)
   }
   
   useEffect(() =>
   {
-    console.log("using effect for", routine)
     doFetch(routine)
   }, [])
   

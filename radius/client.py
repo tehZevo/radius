@@ -91,7 +91,7 @@ class Client:
     def get_recommended(self):
         profiles = fetch_profiles_in_radius(self.id, self.radius)
         #filter out ourselves and people we already follow
-        recommended = {id: p for id, p in profiles.items() if p["distance"] >= 1}
+        recommended = {id: p for id, p in profiles.items() if p["distance"] > 1}
         recommended = [(id, p["profile"], p["distance"]) for id, p in recommended.items()]
         print(recommended)
         #TODO: calculate score

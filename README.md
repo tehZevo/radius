@@ -1,8 +1,11 @@
 # Radius
 
 ## TODO
+- "Radius" in top bar that leads to feed if logged in else identities
+- What would a "discover" page look like? Would it even differ from feed?
 - Allow viewing profiles offline
-- Radius "slider"
+- Fix radius slider
+- Support minRadius and maxRadius
 - Use a scoring system for recommended (based on # of followers that you follow?)
 - Cache last known CID of profiles you're interested in in case they dont log back in to publish via IPNS
 - Fix first visit of profile from top bar having null/undefined id
