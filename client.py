@@ -1,6 +1,7 @@
 import os
 import json
 from dataclasses import dataclass
+import dataclasses
 import tempfile
 import base64
 import time
@@ -49,7 +50,7 @@ class Client:
         self.profile = get_profile(self.id)
         if self.profile is None:
             print("Profile not found, creating...")
-            self.profile = Profile.new()
+            self.profile = Profile.new(self.id)
             save_profile(self.key_name, self.profile)
             print("Profile created.")
         else:
@@ -60,6 +61,8 @@ class Client:
         self.radius = 3 #TODO: make param
         
         self.threads = []
+        
+        self._end_threads = False
         
         self.start_threads()
     
@@ -74,27 +77,48 @@ class Client:
         self.profiles = dict()
         self.upsert_profile(self.id, self.profile, 0)
     
+    def min_distance(self, a, b):
+        if a is None and b is None:
+            return None
+        if a is None:
+            return b
+        if b is None:
+            return a
+        
+        return min(a, b)
+    
     #TODO: what to do when the link between you and someone else breaks (unfollowed)?
     def upsert_profile(self, id, profile, distance):
+        if profile is None:
+            raise ValueError(f"Profile with id {id} was None. Not upserting.")
+            
         #upsert with minimum distance
         if id in self.profiles:
             existing_profile = self.profiles[id]
             self.profiles[id] = {
                 "profile": profile,
-                "distance": min(existing_profile["distance"], distance)
+                "distance": self.min_distance(existing_profile["distance"], distance)
             }
             return
-                
+        
+        print("upserting", id)
         self.profiles[id] = {
             "profile": profile,
             "distance": distance
         }
     
+    def fetch_profile(self, id):
+        profile = get_profile(id)
+        print(profile)
+        self.upsert_profile(id, profile, None)
+    
     def profiles_within_radius(self, radius):
-        return {id: profile for id, profile in self.profiles.items() if profile["distance"] <= radius}
+        return {id: profile
+            for id, profile in self.profiles.items()
+            if profile["distance"] is not None and profile["distance"] <= radius}
     
     def fetcher_thread(self):
-        while True:
+        while self._end_threads:
             time_remaining = FETCH_INTERVAL
             try:
                 start_time = time.time()
@@ -128,9 +152,7 @@ class Client:
             self.threads.append(t)
     
     def stop_threads(self):
-        for t in self.threads:
-            t.stop()
-        self.threads = []
+        self._end_threads = True
     
     def make_public_post(self, content):
         #TODO: is this thread safe?
@@ -141,6 +163,10 @@ class Client:
         #TODO: also need to make a radius constraint here to warn users about malformed following
         self.profile = follow(self.key_name, self.profile, id)
         print("new profile after follow", self.profile)
+    
+    def change_name(self, name):
+        self.profile = dataclasses.replace(self.profile, name=name)
+        save_profile(self.key_name, self.profile)
     
     def get_public_feed(self):
         #TODO: filter self posts?

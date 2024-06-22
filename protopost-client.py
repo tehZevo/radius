@@ -56,7 +56,7 @@ def login(data):
     #TODO: allow multiple identities to be logged in at once
     if client is not None:
         print("Client is already logged in, ignoring.")
-        return False
+        return
         
     print(f"Importing key from {identity_path(identity_name)}...")
     
@@ -65,7 +65,7 @@ def login(data):
     client = Client(key_name)
     print("Logged in!")
     
-    return True
+    return client.id
 
 def logout(_):
     global client
@@ -112,12 +112,12 @@ def get_following(_):
 def get_public_posts(_):
     return client.profile.public_posts
 
-#TODO: support getting any profile by id
-def get_profile(_):
-    return client.profile.to_dict()
-
-def get_radius(_):
-    return client.radius
+def get_profile(id):
+    if id not in client.profiles:
+        client.fetch_profile(id)
+        
+    #TODO: return distance as well?
+    return client.profiles[id]["profile"].to_dict()
 
 def set_radius(radius):
     client.radius = radius
@@ -136,5 +136,6 @@ ProtoPost({
     "login": login,
     "logout": logout,
     "getIdentities": get_identities,
-    "createIdentity": create_identity
+    "createIdentity": create_identity,
+    "setName": lambda name: client.change_name(name),
 }).start(PORT)

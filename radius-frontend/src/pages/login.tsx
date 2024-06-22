@@ -13,10 +13,8 @@ export default function Login()
     e.preventDefault()
     const formData = new FormData(e.target)
     const password = formData.get("password")
-    //TODO: send login request and navigate if successful
-    await radius.login(identity, password)
-    console.log("SUCCESS!")
-    navigate("/profile")
+    const userId = await radius.login(identity, password)
+    navigate("/profile/" + userId)
   }
   
   return (

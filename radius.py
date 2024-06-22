@@ -1,6 +1,7 @@
 import os
 import json
 from dataclasses import dataclass
+import dataclasses
 import tempfile
 import base64
 
@@ -22,29 +23,25 @@ RESOLVE_TIMEOUT = "5s"
 @dataclass_json
 @dataclass
 class Profile:
+    id: str #TODO: verify this
+    name: str
     public_posts: list
     private_posts: list
     following: list
     
-    def new():
-        return Profile([], [], [])
+    def new(id, name=None):
+        name = "Anonymous" if name is None else name
+        return Profile(id, name,[], [], [])
+
 
 def make_public_post(key_name, profile, message):
-    profile = Profile(
-        public_posts=[*profile.public_posts, message],
-        private_posts=profile.private_posts,
-        following=profile.following
-    )
+    profile = dataclasses.replace(profile, public_posts=[*profile.public_posts, message])
     save_profile(key_name, profile)
     
     return profile
 
 def follow(key_name, profile, id):
-    profile = Profile(
-        public_posts=profile.public_posts,
-        private_posts=profile.private_posts,
-        following=[*profile.following, id]
-    )
+    profile = dataclasses.replace(profile, following=[*profile.following, id])
     save_profile(key_name, profile)
     
     return profile
@@ -62,7 +59,6 @@ def get_profile(id):
 def save_profile(key_name, profile):
     cid = write(profile.to_json())
     res = publish(key_name, cid, resolve=RESOLVE_AFTER_PUBLISH, lifetime=LIFETIME)
-    # print(res)
     
 def get_profiles(id, radius, explored=None):
     if radius <= 0:

@@ -21,8 +21,6 @@ export default function Identities()
   
   function login(name: string)
   {
-    //TODO: navigate to login screen or modal or something
-    console.log("todo login", name)
     navigate("/login", {state: {"identity": name}})
   }
   

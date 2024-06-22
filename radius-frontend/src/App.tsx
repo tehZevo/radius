@@ -4,12 +4,14 @@ import {
   RouterProvider,
   useNavigate
 } from "react-router-dom";
-// import './App.css'
+import './App.css'
 
 import Identities from "./pages/identities"
 import Login from "./pages/login"
 import Profile from "./pages/profile"
 import Settings from "./pages/settings"
+import Feed from "./pages/feed"
+import CreatePost from "./pages/createPost"
 
 const router = createBrowserRouter([
   {
@@ -21,12 +23,20 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/profile",
+    path: "/profile/:userId",
     element: <Profile />,
   },
   {
     path: "/settings",
     element: <Settings />,
+  },
+  {
+    path: "/feed",
+    element: <Feed />,
+  },
+  {
+    path: "/create-post",
+    element: <CreatePost />,
   },
 ]);
 
@@ -37,7 +47,8 @@ export default function App() {
     //   <RouterProvider router={router} />
     // </React.StrictMode>
     <>
-      <div><a href="/settings">test</a></div>
+      <div><a href="/create-post">Create post</a></div>
+      <div><a href="/settings">Settings</a></div>
       <RouterProvider router={router} />
     </>
   );
