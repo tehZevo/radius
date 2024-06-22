@@ -10,9 +10,9 @@ import traceback
 
 from dataclasses_json import dataclass_json
 
-from ipfs_utils import read, write, publish, node_id, key_import, key_gen, key_rm, key_list, key_to_node_id
-from keys import generate_key, load_key
-from radius import Profile, make_public_post, get_profile, get_profiles, follow, save_profile, fetch_profiles_in_radius
+from radius.ipfs_utils import read, write, publish, node_id, key_import, key_gen, key_rm, key_list, key_to_node_id
+from radius.keys import generate_key, load_key
+from radius.radius import Profile, make_public_post, get_profile, get_profiles, follow, save_profile, fetch_profiles_in_radius
 
 def min_profile_distance(a, b):
     if a is None and b is None:

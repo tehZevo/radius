@@ -47,6 +47,7 @@ export default function App() {
     //   <RouterProvider router={router} />
     // </React.StrictMode>
     <>
+      <div><a href="/feed">Feed</a></div>
       <div><a href="/create-post">Create post</a></div>
       <div><a href="/settings">Settings</a></div>
       <RouterProvider router={router} />

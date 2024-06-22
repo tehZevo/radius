@@ -1,7 +1,7 @@
 import requests
 import subprocess
 
-#TODO: make client class
+#TODO: move to client class
 IPFS_HOST = "127.0.0.1:5001"
 IPFS_API_URL = f"http://{IPFS_HOST}/api/v0"
 

@@ -6,8 +6,8 @@ from pathlib import Path
 
 from protopost import ProtoPost
 
-from client import Client
-from keys import create_and_save_key
+from radius.client import Client
+from radius.keys import create_and_save_key
 
 #TODO: env vars
 KEY_STORE_DIR = "./keys"
