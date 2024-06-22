@@ -20,6 +20,20 @@ export default function Settings()
     await radius.setName(name)
   }
   
+  async function wipe(e)
+  {
+    e.preventDefault()
+    const formData = new FormData(e.target)
+    const sure = formData.get("yes-im-really-sure")
+    if(!sure)
+    {
+      return
+    }
+    
+    await radius.wipe(sure)
+    navigate("/")
+  }
+  
   return (
     <>
       <div>
@@ -28,6 +42,10 @@ export default function Settings()
       <form onSubmit={setName}>
         Name: <input name="name" type="text" required />
         <button type="submit">Update</button>
+      </form>
+      <form onSubmit={wipe}>
+        Wipe account <input name="yes-im-really-sure" type="checkbox" required /> --yes-im-really-sure
+        <button type="submit">Delete everything</button>
       </form>
     </>
   )

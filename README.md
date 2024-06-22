@@ -8,6 +8,7 @@
   - Especially if all of your nodes are offline for an extended time -- you will need to reupload all of your data
 - Private posts (encrypted)
   - Explore splitting out post content and keys into separate CIDs
+- Validation of profile/post data that result in warnings in the FE that allow the user to unfollow the "offender"
 - Calculate "reach" based on number of people in your radius following you
 - Explore if caching is needed
 - Sort posts in feed reverse-chronologically

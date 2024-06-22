@@ -92,7 +92,7 @@ class Client:
             
         #TODO: set profile to empty profile
         #TODO: reset profiles
-        self.profile = Profile.new()
+        self.profile = Profile.new(self.id)
         save_profile(self.key_name, self.profile)
         self.profiles = dict()
         self.profiles = upsert_profile_based_on_distance(self.profiles, self.id, self.profile, 0)

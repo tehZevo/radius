@@ -27,3 +27,5 @@ export const getFeed = () => ppcl("getFeed")
 export const follow = (id) => ppcl("follow", id)
 
 export const post = (content) => ppcl("post", content)
+
+export const wipe = (sure) => ppcl("wipe", sure)

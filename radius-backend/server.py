@@ -80,9 +80,9 @@ def follow(id):
 def get_profiles(_):
     print(client.profiles)
     
-def wipe(_):
+def wipe(sure):
     print("Wiping profile...")
-    client.wipe(yes_i_really_mean_it=True)
+    client.wipe(yes_i_really_mean_it=sure)
     print("Done.")
     
 def get_following(_):

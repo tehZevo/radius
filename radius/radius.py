@@ -35,9 +35,19 @@ class Profile:
         name = "Anonymous" if name is None else name
         return Profile(id, name,[], [], [])
 
+@dataclass_json
+@dataclass
+class Post:
+    content: str
+    timestamp: int
+    
+    def new(content, timestamp=None):
+        timestamp = int(time.time()) if timestamp is None else timestamp
+        return Post(content, timestamp)
 
-def make_public_post(key_name, profile, message):
-    profile = dataclasses.replace(profile, public_posts=[*profile.public_posts, message])
+def make_public_post(key_name, profile, content):
+    post = Post.new(content)
+    profile = dataclasses.replace(profile, public_posts=[*profile.public_posts, post])
     save_profile(key_name, profile)
     
     return profile
