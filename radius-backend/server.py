@@ -137,4 +137,6 @@ ProtoPost({
     "getIdentities": get_identities,
     "createIdentity": create_identity,
     "setName": lambda name: client.change_name(name),
+    #just return logged in status for now
+    "account": lambda _: client.id if client is not None else None
 }).start(PORT)

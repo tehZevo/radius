@@ -1,8 +1,6 @@
-import { useState } from 'react'
 import {
   createBrowserRouter,
   RouterProvider,
-  useNavigate
 } from "react-router-dom";
 import './App.css'
 
@@ -13,6 +11,7 @@ import Settings from "./pages/settings"
 import Feed from "./pages/feed"
 import CreatePost from "./pages/createPost"
 import Box from "./components/box"
+import TopBar from "./components/topBar"
 
 const router = createBrowserRouter([
   {
@@ -42,19 +41,10 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
-  
   return (
-    // <React.StrictMode>
-    //   <RouterProvider router={router} />
-    // </React.StrictMode>
     <>
-    <Box raised={false}>
-      <Box><a href="/profile">Profile</a></Box>
-      <Box><a href="/feed">Feed</a></Box>
-      <Box><a href="/create-post">Create post</a></Box>
-      <Box><a href="/settings">Settings</a></Box>
-    </Box>
-    <RouterProvider router={router} />
+      <TopBar />
+      <RouterProvider router={router} />
     </>
   );
 }
