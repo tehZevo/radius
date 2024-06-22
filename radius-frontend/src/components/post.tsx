@@ -1,15 +1,12 @@
-import { useNavigate } from 'react-router-dom';
 import Box from "./box"
 import DistanceIcon from "./distanceIcon"
+import Avatar from "./avatar"
 
 export default function Post({post, author})
 {
-  const navigate = useNavigate()
-  // const {post, author} = postWithAuthor
-  // console.log(postWithAuthor)
-  
   const authorInfo = author ? (
     <Box raised={false}>
+      <Avatar userId={author.id} />
       <a href={`/profile/${author.id}`}>{author.name}</a> ({author.id})
       <DistanceIcon distance={author.distance} />
     </Box>

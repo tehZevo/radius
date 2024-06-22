@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import Jdenticon from "react-jdenticon"
 import Box from "./box"
+import Avatar from "./avatar"
 
 export default function IdentityCard({name, id})
 {
@@ -15,7 +15,7 @@ export default function IdentityCard({name, id})
   return (
     <>
       <Box>
-        <Jdenticon size="48" value={id} />
+        <Avatar userId={id} />
         <span>{name}</span>
         <span>{id}</span>
         <button onClick={() => login()}>Login</button>

@@ -14,7 +14,7 @@ DHT_RECORD_COUNT = 5
 #we get the latest version of their profile
 NOCACHE = True
 RESOLVE_AFTER_PUBLISH = False
-LIFETIME = "1h"
+LIFETIME = "24h"
 RESOLVE_TIMEOUT = "5s"
 
 @dataclass_json

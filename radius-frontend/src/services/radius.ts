@@ -33,3 +33,5 @@ export const wipe = (sure) => ppcl("wipe", sure)
 export const account = () => ppcl("account")
 
 export const getRecommended = () => ppcl("getRecommended")
+
+export const isFollowing = (follower, followee) => ppcl("isFollowing", {follower, followee})

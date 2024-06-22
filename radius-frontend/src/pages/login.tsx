@@ -13,8 +13,8 @@ export default function Login()
     e.preventDefault()
     const formData = new FormData(e.target)
     const password = formData.get("password")
-    const userId = await radius.login(identity, password)
-    navigate("/profile/" + userId)
+    await radius.login(identity, password)
+    navigate("/feed")
   }
   
   return (

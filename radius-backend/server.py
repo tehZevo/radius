@@ -9,6 +9,7 @@ from protopost import ProtoPost
 
 from radius.client import Client
 from radius.keys import create_and_save_key
+from radius.radius import get_profile
 
 #TODO: env vars
 KEY_STORE_DIR = "./keys"
@@ -146,6 +147,10 @@ def get_recommended(_):
         "score": score} for id, p, dist, score in recommended]
     return recommended
 
+def is_following(data):
+    follower_profile = get_profile(data["follower"])
+    return data["followee"] in follower_profile.following
+
 ProtoPost({
     "getClientId": lambda _: client.id,
     "getFollowing": get_following,
@@ -164,5 +169,6 @@ ProtoPost({
     "createIdentity": create_identity,
     "setName": lambda name: client.change_name(name),
     #just return logged in status for now
-    "account": lambda _: client.id if client is not None else None
+    "account": lambda _: client.id if client is not None else None,
+    "isFollowing": is_following,
 }).start(PORT)

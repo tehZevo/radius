@@ -75,7 +75,7 @@ class Client:
         
         self.profiles = dict()
         self.profiles = upsert_profile_based_on_distance(self.profiles, self.id, self.profile, 0)
-        self.radius = 3 #TODO: make param
+        self.radius = 3
         
     def wipe(self, yes_i_really_mean_it=False):
         if not yes_i_really_mean_it:
@@ -90,10 +90,11 @@ class Client:
     
     def get_recommended(self):
         profiles = fetch_profiles_in_radius(self.id, self.radius)
-        #filter out people we already follow
-        #TODO: also make sure we don't recommend ourselves lol
-        #TODO: technically isnt this just people with distance > 1?
-        recommended = [(id, p["profile"], p["distance"]) for id, p in profiles.items() if p["profile"].id not in self.profile.following]
+        #filter out ourselves and people we already follow
+        recommended = {id: p for id, p in profiles.items() if p["distance"] >= 1}
+        recommended = [(id, p["profile"], p["distance"]) for id, p in recommended.items()]
+        print(recommended)
+        #TODO: calculate score
         #TODO: sort (with score)
         recommended = [(id, p, dist, 0) for id, p, dist in recommended]
         

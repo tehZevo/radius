@@ -1,9 +1,12 @@
 # Radius
 
 ## TODO
+- Allow viewing profiles offline
+- Radius "slider"
+- Use a scoring system for recommended (based on # of followers that you follow?)
+- Cache last known CID of profiles you're interested in in case they dont log back in to publish via IPNS
 - Fix first visit of profile from top bar having null/undefined id
 - Browse while you wait for your post to send
-- Increase TTL on IPNS publish
 - Verify ids on fetch, or just stop storing id inside profile altogether
 - Fix having to refresh to see profile updates (or is this just ipfs being slow?)
 - BE "distance between users" function
@@ -24,8 +27,6 @@
 - Replies
 - Split following into its own page/tab on profile
 - Make "known followers" page on profiles?
-- Radius "slider"
-- "Recommended" page or sidebar that shows profiles you are not following, sorted by some score (based on # of followers that you follow?)
 - Import/Export tool in UI
 - Explore how to not store all posts within profile
   - Split by day?
