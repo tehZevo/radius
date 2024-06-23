@@ -32,13 +32,22 @@ class Profile:
 
 @dataclass_json
 @dataclass
+class Attachment:
+    name: str
+    cid: str
+    # size: int #TODO, also #TODO: validate
+    #TODO: thumbnails/previews?
+    
+@dataclass_json
+@dataclass
 class Post:
     content: str
+    attachments: list
     timestamp: int
     
-    def new(content, timestamp=None):
+    def new(content, attachments=[], timestamp=None):
         timestamp = int(time.time()) if timestamp is None else timestamp
-        return Post(content, timestamp)
+        return Post(content, attachments, timestamp)
 
 @dataclass_json
 @dataclass
@@ -61,8 +70,18 @@ class PostWithAuthor:
         )
         return PostWithAuthor(post, author)
 
-def make_public_post(key_name, profile, content):
-    post = Post.new(content)
+def make_public_post(key_name, profile, content, attachments=[]):
+    #if attachments, upload all to ipfs first
+    #TODO: catch failures
+    if len(attachments) > 0:
+        print("Uploading", len(attachments), "attachments...")
+    uploaded_attachments = []
+    for name, data in attachments:
+        print("Uploading", name, "...")
+        cid = write(name, data)
+        uploaded_attachments.append(Attachment(name, cid))
+        
+    post = Post.new(content, attachments=uploaded_attachments)
     profile = dataclasses.replace(profile, public_posts=[*profile.public_posts, post])
     save_profile(key_name, profile)
     
@@ -77,7 +96,7 @@ def follow(key_name, profile, id):
 def get_profile(id):
     try:
         cid = resolve(id, record_count=DHT_RECORD_COUNT, nocache=NOCACHE, timeout=RESOLVE_TIMEOUT)
-        data = read(cid)
+        data = str(read(cid), "utf8")
         profile = Profile.from_json(data)
         return profile
     #TODO: dont swallow all exceptions
@@ -118,7 +137,7 @@ def fetch_profiles_in_radius(start_id, radius, verbose=False):
     return profiles
 
 def save_profile(key_name, profile):
-    cid = write(profile.to_json())
+    cid = write("profile", profile.to_json())
     res = publish(key_name, cid, resolve=RESOLVE_AFTER_PUBLISH, lifetime=LIFETIME)
     
 def get_profiles(id, radius, explored=None):

@@ -10,7 +10,6 @@ import Profile from "./pages/profile"
 import Settings from "./pages/settings"
 import Feed from "./pages/feed"
 import CreatePost from "./pages/createPost"
-import Box from "./components/box"
 import TopBar from "./components/topBar"
 
 const router = createBrowserRouter([

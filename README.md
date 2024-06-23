@@ -1,22 +1,30 @@
 # Radius
 
 ## TODO
+- Deleting posts
+- Unfollowing
+- Store metadata (filename, size) with post data? (this would be fakeable), should verify
+- Attachment thumbnails for pictures/videos (create on client side?)
+- Add icons such as "X" in deleting a file and "+" for adding a file
+- Images in post
+- Add warning for large files
 - "Radius" in top bar that leads to feed if logged in else identities
 - What would a "discover" page look like? Would it even differ from feed?
 - Allow viewing profiles offline
 - Fix radius slider
+- Progress indicators for file upload
+- Fix slow publish time
 - Support minRadius and maxRadius
 - Use a scoring system for recommended (based on # of followers that you follow?)
-- Cache last known CID of profiles you're interested in in case they dont log back in to publish via IPNS
 - Fix first visit of profile from top bar having null/undefined id
 - Browse while you wait for your post to send
 - Verify ids on fetch, or just stop storing id inside profile altogether
-- Fix having to refresh to see profile updates (or is this just ipfs being slow?)
 - BE "distance between users" function
-- Show hashicon + id when hovering over profile picture
+- Show id when hovering over profile picture
 - Generate key from mnemonic
   - Generate keys from Python
 - Offline caching of posts/profiles
+  - Cache last known CID of profiles you're interested in in case they dont log back in to publish via IPNS
   - Especially if all of your nodes are offline for an extended time -- you will need to reupload all of your data
 - Private posts (encrypted)
   - Explore splitting out post content and keys into separate CIDs
@@ -25,8 +33,7 @@
 - Explore if caching is needed
 - Sort posts in feed reverse-chronologically
 - How to handle likes/reactions? Are they stored in the reactor's profile?
-- Show profile image, name, etc. on posts
-- Show "1st" "2nd" or "3rd+" linkedin-style connection
+- Add profile pictures
 - Replies
 - Split following into its own page/tab on profile
 - Make "known followers" page on profiles?
@@ -37,3 +44,6 @@
   - Just a different interface for private posts?
 - Servers/channels? Or would this be an entirely different service that uses the same identity system as Radius?
 - Explore other apps you could use with the same identity system (file storage/transfer interface?)
+
+### "TCP" over Radius
+- Mailboxes, per-user, each has outgoing and acknowledgements

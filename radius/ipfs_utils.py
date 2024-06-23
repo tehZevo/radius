@@ -44,8 +44,8 @@ def node_id():
     
     return r.json()["ID"]
 
-def write(data):
-    r = requests.post(f"{IPFS_API_URL}/add", files={"file":data})
+def write(name, data):
+    r = requests.post(f"{IPFS_API_URL}/add", files={name: data})
     if r.status_code != 200:
         raise Exception(r.text)
     
@@ -56,7 +56,7 @@ def read(path):
     if r.status_code != 200:
         raise Exception(r.text)
     
-    return r.text #TODO: dont assume text
+    return r.content
 
 #TODO: allow custom lifetime
 def publish(key_name, path, lifetime="30m", resolve=False):

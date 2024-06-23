@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios from "axios";
 
 //TODO: dont hardcode
 const API_URL = "http://127.0.0.1:8123"
 
-const config = { headers: {'Content-Type': 'application/json'} };
+const config = { headers: {"Content-Type": "application/json"} };
 
 function ppcl(route: string, data = null)
 {
@@ -25,9 +25,12 @@ export const wipe = (sure) => ppcl("wipe", sure)
 export const getProfile = (id) => ppcl("getProfile", id)
 export const getFeed = () => ppcl("getFeed")
 export const follow = (id) => ppcl("follow", id)
-export const post = (content) => ppcl("post", content)
+export const post = (content, attachments=[]) => ppcl("post", {content, attachments})
 export const getRecommended = () => ppcl("getRecommended")
 export const isFollowing = (follower, followee) => ppcl("isFollowing", {follower, followee})
+
+//files
+export const getFile = (cid) => ppcl("getFile", cid)
 
 //configuration
 export const getRadius = () => ppcl("getRadius")

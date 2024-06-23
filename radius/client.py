@@ -125,9 +125,9 @@ class Client:
         print(profile)
         self.profiles = upsert_profile_based_on_distance(self.profiles, id, profile, None)
     
-    def make_public_post(self, content):
+    def make_public_post(self, content, attachments=[]):
         #TODO: is this thread safe?
-        self.profile = make_public_post(self.key_name, self.profile, content)
+        self.profile = make_public_post(self.key_name, self.profile, content, attachments=attachments)
     
     def follow(self, id):
         #TODO: ensure following is a SET not a list

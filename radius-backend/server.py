@@ -4,12 +4,14 @@ import argparse
 from operator import itemgetter
 from pathlib import Path
 import json
+import base64
 
 from protopost import ProtoPost
 
 from radius.client import Client
 from radius.keys import create_and_save_key
 from radius.radius import get_profile
+from radius.ipfs_utils import read
 
 #TODO: env vars
 KEY_STORE_DIR = "./keys"
@@ -115,9 +117,14 @@ def get_feed(_):
     posts = [post.to_dict() for post in posts]
     return posts
 
-def post(message):
+def post(data):
     print("Posting message...")
-    client.make_public_post(message)
+    #convert attachments to bytes
+    attachments = [(
+        attachment["name"],
+        base64.b64decode(attachment["data"])
+    ) for attachment in data["attachments"]]
+    client.make_public_post(data["content"], attachments)
     print("Done.")
 
 #TODO: support get following of other known profiles (or else fetch profile first?)
@@ -151,6 +158,12 @@ def is_following(data):
     follower_profile = get_profile(data["follower"])
     return data["followee"] in follower_profile.following
 
+def get_file(cid):
+    file = read(cid)
+    file = base64.b64encode(file)
+    file = str(file, "utf8")
+    return file
+
 ProtoPost({
     "getClientId": lambda _: client.id,
     "getFollowing": get_following,
@@ -171,4 +184,5 @@ ProtoPost({
     #just return logged in status for now
     "account": lambda _: client.id if client is not None else None,
     "isFollowing": is_following,
+    "getFile": get_file,
 }).start(PORT)
