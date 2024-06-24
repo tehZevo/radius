@@ -3,3 +3,4 @@ bip-utils
 pynacl
 dataclasses-json
 pem
+git+https://github.com/tehzevo/protopost-python
