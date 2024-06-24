@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Box from "./box"
-import Avatar from "./avatar"
+import Avatar from "./profile/avatar"
 
 export default function IdentityCard({name, id})
 {

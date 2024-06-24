@@ -1,9 +1,5 @@
 import {useState, useEffect} from "react"
-import Box from "./box"
-import DistanceIcon from "./distanceIcon"
-import Avatar from "./avatar"
-import * as radius from "../services/radius"
-
+import * as radius from "../../services/radius"
 
 const MIME_TYPES = {
   "gif": "image/gif",
@@ -12,7 +8,7 @@ const MIME_TYPES = {
   "jpeg": "image/jpg",
 }
 
-function PostAttachment({attachment})
+export default function PostAttachment({attachment})
 {
   const [data, setData] = useState()
   
@@ -20,7 +16,6 @@ function PostAttachment({attachment})
   {
     const data = await radius.getFile(attachment.cid)
     setData(data)
-    console.log(data)
   }
   
   useEffect(() =>
@@ -44,25 +39,4 @@ function PostAttachment({attachment})
     //TODO
     return <span>idk what this is</span>
   }
-}
-
-export default function Post({post, author})
-{
-  const authorInfo = author ? (
-    <Box raised={false}>
-      <Avatar userId={author.id} />
-      <a href={`/profile/${author.id}`}>{author.name}</a> ({author.id})
-      <DistanceIcon distance={author.distance} />
-    </Box>
-  ) : null
-  
-  return (
-    <>
-      <Box direction="column">
-        {authorInfo}
-        <span>{post.content} ({post.timestamp})</span>
-        {post.attachments.map((e) => <PostAttachment attachment={e} />)}
-      </Box>
-    </>
-  )
 }

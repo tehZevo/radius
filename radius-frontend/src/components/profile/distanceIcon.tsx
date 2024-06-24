@@ -1,5 +1,3 @@
-import Box from "./box"
-
 const DISTANCE_COLORS = [
   "#3d6eeb", //you (0)
   "#ccbe1f", //1st

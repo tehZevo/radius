@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import * as radius from "../services/radius"
-import Post from "../components/post"
+import Post from "../components/post/post"
 import Box from "../components/box"
-import FeedSidebar from "../components/feedSidebar"
+import FeedSidebar from "../components/feed/feedSidebar"
 
 export default function Feed()
 {

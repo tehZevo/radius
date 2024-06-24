@@ -1,4 +1,4 @@
-import Box from "./box"
+import Box from "../box"
 import RadiusSlider from "./radiusSlider"
 import Recommended from "./recommended"
 

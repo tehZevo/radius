@@ -1,5 +1,5 @@
-import Box from "./box"
-import {useRecommended} from "../hooks/radiusHooks"
+import Box from "../box"
+import {useRecommended} from "../../hooks/radiusHooks"
 import RecommendedCard from "./recommendedCard"
 
 export default function Recommended() {

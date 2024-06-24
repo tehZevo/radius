@@ -1,7 +1,7 @@
 import Jdenticon from "react-jdenticon"
-import Box from "./box"
-import DistanceIcon from "./distanceIcon"
-import FollowButton from "./followButton"
+import Box from "../box"
+import DistanceIcon from "../profile/distanceIcon"
+import FollowButton from "../profile/followButton"
 
 export default function RecommendedCard({id, profile, distance, score}) {
   

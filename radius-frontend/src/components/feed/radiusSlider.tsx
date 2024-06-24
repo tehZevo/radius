@@ -2,15 +2,14 @@ import {useEffect, useState} from "react"
 import Slider, { Range } from 'rc-slider'
 import 'rc-slider/assets/index.css';
 
-import Box from "./box"
-import * as R from "../services/radius"
-import {useClientRadius} from "../hooks/radiusHooks"
+import Box from "../box"
+import * as R from "../../services/radius"
+import {useClientRadius} from "../../hooks/radiusHooks"
 
 export default function RadiusSlider() {
   const [radius, setRadius] = useState([0, 0])
   
   // const radius = useClientRadius(0)
-  console.log("radius:", radius)
   //TODO: figure out why we cant set slider default value from server
   function setRadiusFromSlider(value)
   {
@@ -21,7 +20,6 @@ export default function RadiusSlider() {
   async function fetchRadius()
   {
     const radius = await R.getRadius()
-    console.log(radius)
     setRadius([0, radius])
   }
   

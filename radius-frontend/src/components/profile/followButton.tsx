@@ -1,4 +1,4 @@
-import * as radius from "../services/radius"
+import * as radius from "../../services/radius"
 
 export default function FollowButton({userId})
 {
