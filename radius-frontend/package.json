@@ -10,14 +10,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@helia/http": "^1.0.9",
+    "@helia/json": "^3.0.4",
+    "@helia/strings": "^3.0.4",
+    "@helia/unixfs": "^3.0.6",
     "axios": "^1.7.2",
     "emoji-picker-react": "^4.10.0",
+    "helia": "^4.2.4",
     "rc-slider": "^10.6.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.2.3",
     "react-jdenticon": "^1.2.0",
-    "react-router-dom": "^6.23.1"
+    "react-router-dom": "^6.23.1",
+    "react-spinners": "^0.13.8",
+    "uint8arrays": "^5.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

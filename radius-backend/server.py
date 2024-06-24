@@ -10,7 +10,7 @@ from protopost import ProtoPost
 
 from radius.client import Client
 from radius.keys import create_and_save_key
-from radius.radius import get_profile
+from radius.radius import get_profile, get_post
 from radius.ipfs_utils import read
 
 #TODO: env vars
@@ -112,7 +112,7 @@ def get_feed(_):
     #TODO: should we sort here or client?
     
     #TODO: idk why e.post is a dict but ok
-    posts.sort(key=lambda e: e.post["timestamp"], reverse=True)
+    posts.sort(key=lambda e: e.post.timestamp, reverse=True)
     
     posts = [post.to_dict() for post in posts]
     return posts
@@ -185,4 +185,5 @@ ProtoPost({
     "account": lambda _: client.id if client is not None else None,
     "isFollowing": is_following,
     "getFile": get_file,
+    "getPost": lambda cid: get_post(cid).to_dict(),
 }).start(PORT)

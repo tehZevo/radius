@@ -28,7 +28,7 @@ class Profile:
     
     def new(id, name=None):
         name = "Anonymous" if name is None else name
-        return Profile(id, name,[], [], [])
+        return Profile(id, name, [], [], [])
 
 @dataclass_json
 @dataclass
@@ -59,16 +59,17 @@ class Author:
 @dataclass_json
 @dataclass
 class PostWithAuthor:
+    id: str
     post: Post
     author: Author
     
-    def new(post, author_profile_with_distance):
+    def new(id, post, author_profile_with_distance):
         author = author=Author(
             id=author_profile_with_distance["profile"].id,
             name=author_profile_with_distance["profile"].name,
             distance=author_profile_with_distance["distance"]
         )
-        return PostWithAuthor(post, author)
+        return PostWithAuthor(id, post, author)
 
 def make_public_post(key_name, profile, content, attachments=[]):
     #if attachments, upload all to ipfs first
@@ -81,8 +82,12 @@ def make_public_post(key_name, profile, content, attachments=[]):
         cid = write(name, data)
         uploaded_attachments.append(Attachment(name, cid))
         
+    #upload post to ipfs
     post = Post.new(content, attachments=uploaded_attachments)
-    profile = dataclasses.replace(profile, public_posts=[*profile.public_posts, post])
+    post_cid = write("post", post.to_json())
+
+    #save post cid in profile
+    profile = dataclasses.replace(profile, public_posts=[*profile.public_posts, post_cid])
     save_profile(key_name, profile)
     
     return profile
@@ -102,6 +107,11 @@ def get_profile(id):
     #TODO: dont swallow all exceptions
     except:
         return None
+
+def get_post(cid):
+    data = read(cid)
+    post = Post.from_json(data)
+    return post
 
 #BFS search
 #TODO: allow a cache to be passed in so they arent refetched?

@@ -1,6 +1,10 @@
 # Radius
 
+* All data is currently stored as dag-pb
+
 ## TODO
+- Look into storing data as dag-json and dag-cbor
+- Fix key filename casing issue on non-windows
 - Fix css interaction with emoji picker
 - Can't react to posts if posts don't have ids. Most logical way to give posts ids is to make each one its own ipfs content
 - Make emoji picker kind of a modal, so clicks outside or escape will close the picker
