@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@helia/http": "^1.0.9",
+    "@helia/ipns": "^7.2.2",
     "@helia/json": "^3.0.4",
     "@helia/strings": "^3.0.4",
     "@helia/unixfs": "^3.0.6",

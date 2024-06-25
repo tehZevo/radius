@@ -20,14 +20,8 @@ export default function Post({postId, author})
     </Box>
   ) : null
 
-  async function fetchPost()
-  {
-    const post = await radius.readJson(postId)
-    setPost(post)
-  }
-  
   useEffect(() => {
-    fetchPost()
+    radius.getPost(postId).then((post) => setPost(post))
   }, [postId])
 
   function handleReaction(emoji)

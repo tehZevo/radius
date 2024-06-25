@@ -36,7 +36,7 @@ export default function Profile() {
           </Box>
           <Box direction="column">
             <span>Posts:</span>
-            <div>{profile.public_posts.map(e => <Post postId={e} />)}</div>
+            <div>{profile.public_posts.map(e => <Post key={e} postId={e} />)}</div>
           </Box>
         </>
       ) : <span>Loading...</span>}

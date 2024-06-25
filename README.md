@@ -3,6 +3,9 @@
 * All data is currently stored as dag-pb
 
 ## TODO
+- Use progress events for Helia (especially for file uploads/downloads)
+- Use https://blog.ipfs.tech/verified-fetch/ for reading
+- Sort posts reverse-chronologically again
 - Potential for pinning your followee's posts
 - Look into storing data as dag-json and dag-cbor
 - Fix key filename casing issue on non-windows
