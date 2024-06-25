@@ -109,12 +109,8 @@ def set_radius(radius):
 
 def get_feed(_):
     posts = client.get_public_feed()
-    #TODO: should we sort here or client?
-    
-    #TODO: idk why e.post is a dict but ok
-    posts.sort(key=lambda e: e.post.timestamp, reverse=True)
-    
     posts = [post.to_dict() for post in posts]
+    
     return posts
 
 def post(data):

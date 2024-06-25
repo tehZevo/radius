@@ -3,7 +3,7 @@ from operator import itemgetter
 
 from radius.ipfs_utils import key_import, key_rm, key_list, key_to_node_id
 from radius.keys import load_key
-from radius.radius import Profile, make_public_post, get_profile, follow, save_profile, fetch_profiles_in_radius, PostWithAuthor, Author, get_post
+from radius.radius import Profile, make_public_post, get_profile, follow, save_profile, fetch_profiles_in_radius, PostIdWithAuthor, Author, get_post
 
 def min_profile_distance(a, b):
     if a is None and b is None:
@@ -146,8 +146,7 @@ class Client:
         posts = []
         for profile in profiles:
             for post_id in profile["profile"].public_posts:
-                post = get_post(post_id)
-                posts.append(PostWithAuthor.new(post_id, post, profile))
+                posts.append(PostIdWithAuthor.new(post_id, profile))
                 
         return posts
         

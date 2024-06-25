@@ -3,6 +3,7 @@
 * All data is currently stored as dag-pb
 
 ## TODO
+- Potential for pinning your followee's posts
 - Look into storing data as dag-json and dag-cbor
 - Fix key filename casing issue on non-windows
 - Fix css interaction with emoji picker

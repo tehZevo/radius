@@ -23,10 +23,7 @@ export default function Feed()
   return (
     <Box raised={false}>
       <Box raised={false} direction="column">
-        {feed.map(e => {
-          const {post, author} = e;
-          return <Post post={post} author={author} />
-        })}
+        {feed.map(({post_id, author}) => <Post postId={post_id} author={author} />)}
       </Box>
       <FeedSidebar />
     </Box>

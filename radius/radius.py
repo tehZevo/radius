@@ -58,18 +58,17 @@ class Author:
 
 @dataclass_json
 @dataclass
-class PostWithAuthor:
-    id: str
-    post: Post
+class PostIdWithAuthor:
+    post_id: str
     author: Author
     
-    def new(id, post, author_profile_with_distance):
+    def new(post_id, author_profile_with_distance):
         author = author=Author(
             id=author_profile_with_distance["profile"].id,
             name=author_profile_with_distance["profile"].name,
             distance=author_profile_with_distance["distance"]
         )
-        return PostWithAuthor(id, post, author)
+        return PostIdWithAuthor(post_id, author)
 
 def make_public_post(key_name, profile, content, attachments=[]):
     #if attachments, upload all to ipfs first
