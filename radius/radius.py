@@ -30,46 +30,6 @@ class Profile:
         name = "Anonymous" if name is None else name
         return Profile(id, name, [], [], [])
 
-@dataclass_json
-@dataclass
-class Attachment:
-    name: str
-    cid: str
-    # size: int #TODO, also #TODO: validate
-    #TODO: thumbnails/previews?
-    
-@dataclass_json
-@dataclass
-class Post:
-    content: str
-    attachments: list
-    timestamp: int
-    
-    def new(content, attachments=[], timestamp=None):
-        timestamp = int(time.time()) if timestamp is None else timestamp
-        return Post(content, attachments, timestamp)
-
-@dataclass_json
-@dataclass
-class Author:
-    id: str
-    name: str
-    distance: int
-
-@dataclass_json
-@dataclass
-class PostIdWithAuthor:
-    post_id: str
-    author: Author
-    
-    def new(post_id, author_profile_with_distance):
-        author = author=Author(
-            id=author_profile_with_distance["profile"].id,
-            name=author_profile_with_distance["profile"].name,
-            distance=author_profile_with_distance["distance"]
-        )
-        return PostIdWithAuthor(post_id, author)
-
 def make_public_post(key_name, profile, content, attachments=[]):
     #if attachments, upload all to ipfs first
     #TODO: catch failures
@@ -107,62 +67,6 @@ def get_profile(id):
     except:
         return None
 
-def get_post(cid):
-    data = read(cid)
-    post = Post.from_json(data)
-    return post
-
-#BFS search
-#TODO: allow a cache to be passed in so they arent refetched?
-def fetch_profiles_in_radius(start_id, radius, verbose=False):
-    explored = set()
-    profiles = dict()
-    horizon = deque([(start_id, 0)]) #id, distance
-    
-    while len(horizon) > 0:
-        id, distance = horizon.popleft()
-        t = time.time()
-        profile = get_profile(id)
-        #failed to resolve, skip
-        if profile is None:
-            continue
-            
-        if verbose:
-            print(id, distance, "fetch took", time.time() - t)
-        profiles[id] = {
-            "profile": profile,
-            "distance": distance
-        }
-        explored.add(id)
-        
-        for next_id in profile.following:
-            #skip already explored and neighbors with too high of a distance
-            if next_id in explored:
-                continue
-            if distance + 1 > radius:
-                continue
-            horizon.append((next_id, distance + 1))
-            
-    return profiles
-
 def save_profile(key_name, profile):
     cid = write("profile", profile.to_json())
     res = publish(key_name, cid, resolve=RESOLVE_AFTER_PUBLISH, lifetime=LIFETIME)
-    
-def get_profiles(id, radius, explored=None):
-    if radius <= 0:
-        return dict()
-    
-    #TODO: handle cases where its not a valid radius profile
-    profile = get_profile(id)
-    profiles = {id: profile}
-    #TODO: i think explored is just equal to following
-    explored = set([id]) if explored is None else explored
-    
-    for next_id in profile.following:
-        print("exploring", next_id)
-        next_profiles = get_profiles(next_id, radius - 1, explored=explored.copy())
-        explored.add(next_id)
-        profiles.update(next_profiles)
-    
-    return profiles

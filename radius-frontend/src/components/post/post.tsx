@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import EmojiPicker from 'emoji-picker-react';
+import { useState, useEffect } from "react"
+import EmojiPicker from "emoji-picker-react"
 
 import Box from "../box"
 import DistanceIcon from "../profile/distanceIcon"

@@ -62,7 +62,7 @@ def read(path):
 def publish(key_name, path, lifetime="30m", resolve=False):
     resolve = 1 if resolve else 0
     #TODO: implement timeout in api version
-    r = requests.post(f"{IPFS_API_URL}/name/publish?arg={path}&key={key_name}&lifetime={lifetime}&reasolve={resolve}")
+    r = requests.post(f"{IPFS_API_URL}/name/publish?arg={path}&key={key_name}&lifetime={lifetime}&resolve={resolve}")
     if r.status_code != 200:
         raise Exception(r.text)
     

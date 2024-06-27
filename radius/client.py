@@ -3,7 +3,7 @@ from operator import itemgetter
 
 from radius.ipfs_utils import key_import, key_rm, key_list, key_to_node_id
 from radius.keys import load_key
-from radius.radius import Profile, make_public_post, get_profile, follow, save_profile, fetch_profiles_in_radius, PostIdWithAuthor, Author, get_post
+from radius.radius import Profile, make_public_post, get_profile, follow, save_profile
 
 def min_profile_distance(a, b):
     if a is None and b is None:
@@ -88,18 +88,6 @@ class Client:
         self.profiles = dict()
         self.profiles = upsert_profile_based_on_distance(self.profiles, self.id, self.profile, 0)
     
-    def get_recommended(self):
-        profiles = fetch_profiles_in_radius(self.id, self.radius)
-        #filter out ourselves and people we already follow
-        recommended = {id: p for id, p in profiles.items() if p["distance"] > 1}
-        recommended = [(id, p["profile"], p["distance"]) for id, p in recommended.items()]
-        print(recommended)
-        #TODO: calculate score
-        #TODO: sort (with score)
-        recommended = [(id, p, dist, 0) for id, p, dist in recommended]
-        
-        return recommended
-    
     #TODO: what to do when the link between you and someone else breaks (unfollowed)?
     def upsert_profile(self, id, profile, distance):
         if profile is None:
@@ -138,15 +126,3 @@ class Client:
     def change_name(self, name):
         self.profile = dataclasses.replace(self.profile, name=name)
         save_profile(self.key_name, self.profile)
-    
-    def get_public_feed(self):
-        #TODO: filter self posts?
-        profiles = fetch_profiles_in_radius(self.id, self.radius).values()
-        
-        posts = []
-        for profile in profiles:
-            for post_id in profile["profile"].public_posts:
-                posts.append(PostIdWithAuthor.new(post_id, profile))
-                
-        return posts
-        

@@ -1,4 +1,5 @@
 import {useState, useEffect} from "react"
+import {encode} from "base64-arraybuffer"
 import * as radius from "../../services/radius"
 
 const MIME_TYPES = {
@@ -21,7 +22,7 @@ export default function PostAttachment({attachment})
   useEffect(() =>
   {
     fetchData()
-  }, [])
+  }, [attachment])
   
   //TODO: fetch data?
   if(attachment.name.endsWith(".jpg") || attachment.name.endsWith(".png") || attachment.name.endsWith(".jpeg"))
@@ -32,7 +33,8 @@ export default function PostAttachment({attachment})
     }
     const extension = attachment.name.split(".").slice(-1)[0]
     const mimeType = MIME_TYPES[extension]
-    return data ? <img width="128" src={"data:" + mimeType + ";base64," + data} /> : "Loading..."
+    const dataEncoded = encode(data)
+    return data ? <img width="128" src={"data:" + mimeType + ";base64," + dataEncoded} /> : "Loading..."
   }
   else
   {

@@ -10,7 +10,7 @@ from protopost import ProtoPost
 
 from radius.client import Client
 from radius.keys import create_and_save_key
-from radius.radius import get_profile, get_post
+from radius.radius import get_profile
 from radius.ipfs_utils import read
 
 #TODO: env vars
@@ -91,9 +91,6 @@ def follow(id):
     client.follow(id)
     print("Done.")
     
-def get_profiles(_):
-    print(client.profiles)
-    
 def wipe(sure):
     print("Wiping profile...")
     client.wipe(yes_i_really_mean_it=sure)
@@ -131,13 +128,6 @@ def get_following(_):
 def get_public_posts(_):
     return client.profile.public_posts
 
-def get_profile(id):
-    if id not in client.profiles:
-        client.fetch_profile(id)
-        
-    #TODO: return distance as well?
-    return client.profiles[id]["profile"].to_dict()
-
 def set_radius(radius):
     client.radius = radius
     
@@ -162,15 +152,11 @@ def get_file(cid):
 
 ProtoPost({
     "getClientId": lambda _: client.id,
-    "getFollowing": get_following,
     "getRadius": lambda _: client.radius,
     "follow": follow,
     "setRadius": set_radius,
     "getFeed": get_feed,
     "wipe": wipe,
-    "getProfile": get_profile,
-    "getProfiles": get_profiles,
-    "getRecommended": get_recommended,
     "post": post,
     "login": login,
     "logout": logout,
@@ -181,5 +167,4 @@ ProtoPost({
     "account": lambda _: client.id if client is not None else None,
     "isFollowing": is_following,
     "getFile": get_file,
-    "getPost": lambda cid: get_post(cid).to_dict(),
 }).start(PORT)

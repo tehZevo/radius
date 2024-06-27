@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import * as radius from "../services/radius"
+
 import Post from "../components/post/post"
 import Box from "../components/box"
 import FollowButton from "../components/profile/followButton"
@@ -13,6 +14,8 @@ export default function Profile() {
 
   async function fetchProfile() {
     const profile = await radius.getProfile(userId)
+    console.log(profile)
+    
     setProfile(profile)
   }
 

@@ -1,85 +1,71 @@
-// import { createHelia } from 'helia'
-import { unixfs } from '@helia/unixfs'
-import { createHeliaHTTP } from '@helia/http'
-import { ipns } from '@helia/ipns'
-import { CID } from 'multiformats/cid'
-import { concat } from "uint8arrays/concat"
+import axios from "axios";
 
-var helia = null
-var heliaIpfs = null
-var heliaIpns = null
+//TODO: UI to set this
+const IPFS_HOST = "http://127.0.0.1:5001"
 
-export async function getHelia()
+export async function resolve(peerId, options={nocache: false, recordCount: 16, timeout: "5s"})
 {
-  if(helia == null)
-  {
-    //TODO: bad chrome behavior, monitor:
-    //https://github.com/ipfs/helia/issues/164 and
-    //https://github.com/libp2p/js-libp2p/issues/1896
-    // helia = await createHelia()
-    
-    helia = await createHeliaHTTP()
-  }
-
-  return helia;
-}
-
-export async function getIpfs()
-{
-  if(heliaIpfs == null)
-  {
-    heliaIpfs = unixfs(await getHelia())
-  }
-
-  return heliaIpfs
-}
-
-export async function getIpns()
-{
-  if(heliaIpns == null)
-  {
-    heliaIpns = ipns(await getHelia())
-  }
-
-  return heliaIpns
-}
-
-export async function resolve(peerId, options={})
-{
-  return (await getIpns()).resolve(peerId, options)
+  const nocache = options.nocache ? 1 : 0
+  const {timeout, recordCount} = options
+  const res = await axios.post(`${IPFS_HOST}/api/v0/name/resolve/${peerId}?nocache=${nocache}&dht-record-count=${recordCount}&dht-timeout=${timeout}`)
+  //trim "/ipfs/"
+  const cid = res.data.Path.replace("/ipfs/", "")
+  return cid
 }
 
 export async function publish(peerId, cid, options={})
 {
-  cid = CID.parse(cid)
-  return (await getIpns()).publish(peerId, cid, options)
+  //TODO
 }
 
 export async function readBytes(cid)
 {
-  const fs = await getIpfs()
-  cid = CID.parse(cid)
-
-  const arrays = []
-  for await (const buf of fs.cat(cid))
-  {
-    arrays.push(buf)
-  }
-
-  return concat(arrays)
+  //TODO: idk why this works, but python reqests and docs say ?arg={cid}
+  //TODO: catch bad statuses
+  const res = await axios.post(`${IPFS_HOST}/api/v0/cat/` + cid, null, {responseType: "arraybuffer"})
+  return res.data
 }
 
 export async function readJson(cid)
 {
-  return JSON.parse(new TextDecoder().decode(await readBytes(cid)))
+  const bytes = await readBytes(cid)
+  return JSON.parse(new TextDecoder().decode(bytes))
+}
+
+export async function removeKey(name)
+{
+  return await axios.post(`${IPFS_HOST}/api/v0/key/rm/${name}`)
+    .then(() => true)
+    .catch((e) => 
+    {
+      if(e.response.data.Code == 0) return false
+
+      throw e
+    })
+}
+
+//NOTE: expects pkcs8 pem formatted key
+export async function importKey(name, key)
+{
+  const formData = new FormData()
+  formData.append("key", new Blob([key]), "key.pem")
+  
+  const res = await axios.post(
+    `${IPFS_HOST}/api/v0/key/import/${name}?format=pem-pkcs8-cleartext`,
+    formData,
+    {headers: {"Content-Type": "multipart/form-data"}}
+  )
+  
+  console.log(res)
+  return res
 }
 
 export async function writeBytes(bytes)
 {
-    TODO
+  TODO
 }
 
 export async function writeJson(data)
 {
-    TODO
+  TODO
 }
