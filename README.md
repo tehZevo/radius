@@ -3,6 +3,7 @@
 * All data is currently stored as dag-pb
 
 ## TODO
+- Store state in local storage and expose all radius functionality through a single useRadius hook?
 - Use progress events for Helia (especially for file uploads/downloads)
 - Use https://blog.ipfs.tech/verified-fetch/ for reading
 - Sort posts reverse-chronologically again

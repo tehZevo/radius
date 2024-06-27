@@ -13,13 +13,11 @@ export default function IdentityCard({name, id})
   
   //TODO: get id from server
   return (
-    <>
-      <Box>
-        <Avatar userId={id} />
-        <span>{name}</span>
-        <span>{id}</span>
-        <button onClick={() => login()}>Login</button>
-      </Box>
-    </>
+    <Box>
+      <Avatar userId={id} />
+      <span>{name}</span>
+      <span>{id}</span>
+      <button onClick={() => login()}>Login</button>
+    </Box>
   )
 }

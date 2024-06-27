@@ -1,7 +1,8 @@
 import nacl from "tweetnacl"
 import {pbkdf2Async} from "@noble/hashes/pbkdf2"
 import { sha256 } from '@noble/hashes/sha256';
-import {encode} from "base64-arraybuffer"
+import {encode, decode} from "base64-arraybuffer"
+import * as ipfs from "./ipfs"
 
 export function why(key)
 {
@@ -23,6 +24,7 @@ export function why(key)
     return der
 }
 
+//TODO: get node id by importing key temporarily and save that to key data
 
 export async function generateIpfsKey()
 {
@@ -32,32 +34,45 @@ export async function generateIpfsKey()
     pem = encode(pem)
     pem = "-----BEGIN PRIVATE KEY-----\n" + pem + "\n-----END PRIVATE KEY-----"
     
-    return new TextEncoder("utf-8").encode(pem)
+    const id = await ipfs.getPeerIdFromKey(pem)
+
+    const key = new TextEncoder("utf-8").encode(pem)
+    return {key, id}
 }
 
-async function generateEncryptionKey(password)
+async function generateEncryptionKey(password, salt)
+{
+    //TODO: normalize password
+    password = new TextEncoder("utf-8").encode(password)
+    //TODO: make ui for increasing #iters
+    return await pbkdf2Async(sha256, password, salt, { c: 100000, dkLen: 32 });
+}
+
+
+export async function encryptIpfsKey(ipfsKey, password)
 {
     const salt = nacl.randomBytes(32)
-    //TODO: make ui for increasing #iters
-    const encryptionKey = await pbkdf2Async(sha256, password, salt, { c: 100000, dkLen: 32 });
-
-    return [salt, encryptionKey]
-}
-
-
-export async function encryptIpfsKey(ipfsKey, encryptionKey)
-{
+    const encryptionKey = await generateEncryptionKey(password, salt)
     const nonce = nacl.randomBytes(nacl.secretbox.nonceLength)
     const encryptedKey = nacl.secretbox(ipfsKey, nonce, encryptionKey)
     
-    return [nonce, encryptedKey]
+    //TODO: return b64 instead for portability? or just do that when exporting?
+    return {
+        key: encode(encryptedKey),
+        salt: encode(salt),
+        nonce: encode(nonce)
+    }
 }
 
-export async function generateIdentity(password)
+export async function decryptIpfsKey(ipfsKey, password)
 {
-    const ipfsKey = await generateIpfsKey()
-    const [salt, encryptionKey] = await generateEncryptionKey(password)
-    const [nonce, encryptedIdentity] = await encryptIpfsKey(ipfsKey, encryptionKey)
+    var {key, salt, nonce} = ipfsKey
+    key = new Uint8Array(decode(key))
+    salt = new Uint8Array(decode(salt))
+    nonce = new Uint8Array(decode(nonce))
     
-    return [encode(encryptedIdentity), encode(salt), encode(nonce)]
+    const encryptionKey = await generateEncryptionKey(password, salt)
+    const decryptedKey = nacl.secretbox.open(key, nonce, encryptionKey)
+    
+    return decryptedKey
 }

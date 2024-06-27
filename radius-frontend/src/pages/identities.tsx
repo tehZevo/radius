@@ -53,6 +53,8 @@ function ImportIdentity()
 
 function CreateIdentity()
 {
+  const navigate = useNavigate();
+
   async function createIdentity(e)
   {
     e.preventDefault()
@@ -60,10 +62,12 @@ function CreateIdentity()
     const name = formData.get("name")
     const password = formData.get("password")
     
-    const [key, salt, nonce] = await keys.generateIdentity(password)
-    
-    await radius.importAccount(name, {key, salt, nonce})
-    // await ipfs.importKey(name, key)
+    const {key, id} = await keys.generateIpfsKey()
+    const encryptedKey = await keys.encryptIpfsKey(key, password)
+    await radius.importAccount(name, id, encryptedKey)
+
+    //TODO: set some kind of global state instead of just navigating
+    navigate(0)
   }
   
   return (
@@ -87,33 +91,21 @@ function CreateIdentity()
 export default function Identities()
 {
   const [identities, setIdentities] = useState([])
-  const navigate = useNavigate();
   
   async function fetchIdentities()
   {
-    const identities = await radius.getIdentities()
-    console.log(identities)
+    const identities = Object.values(await radius.getIdentities())
     setIdentities(identities)
   }
   
-  //TODO: avoid double render
   useEffect(() => {
     fetchIdentities()
   }, [])
   
-  function login(name: string)
-  {
-    navigate("/login", {state: {"identity": name}})
-  }
-  
   return (
       <Box raised={false}>
         <Box direction="column" raised={false}>
-          {identities.map(e => {
-            const {name, id} = e
-            //return <button key={e} onClick={() => login(e)}>{e}</button>
-            return <IdentityCard key={id} name={name} id={id}/>
-          })}
+          {identities.map(({name, id}) => <IdentityCard key={id} name={name} id={id}/>)}
         </Box>
         <Box direction="column" raised={false}>
           <CreateIdentity />

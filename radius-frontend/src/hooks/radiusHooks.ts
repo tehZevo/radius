@@ -2,7 +2,7 @@ import {useState, useEffect} from "react"
 import * as radius from "../services/radius"
 import useFetcher from "./useFetcher"
 
-export const useAccount = (x=null) => useFetcher(() => radius.account(), x)
+export const useAccount = (x=null) => useFetcher(() => radius.getUserId(), x)
 
 // export const useRecommended = (x) => useFetcher(() => radius.getRecommended(), x)
 
@@ -26,3 +26,8 @@ export function useRecommended()
 }
 
 export const useClientRadius = (x) => useFetcher(() => radius.getRadius(), x)
+
+export const useRadius = () => ({
+    useProfile: (userId) => useFetcher(() => radius.getProfile(userId)),
+    useAccount: () => radius.getUserId()
+})

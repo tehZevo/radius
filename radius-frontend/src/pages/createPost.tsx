@@ -81,10 +81,11 @@ export default function CreatePost()
     const content = formData.get("content")
     //TODO: return post cid and then navigate to single post
     //TODO: this would likely require storing author data on the post.. which means the author has to sign posts
-    await radius.post(content, files)
+    //TODO: reenable file uploading
+    const postId = await radius.createPost(content, files)
     
-    const clientId = await radius.getClientId()
-    navigate("/profile/" + clientId)
+    const userId = await radius.getUserId()
+    navigate("/profile/" + userId)
   }
   
   return (

@@ -151,7 +151,6 @@ def get_file(cid):
     return file
 
 ProtoPost({
-    "getClientId": lambda _: client.id,
     "getRadius": lambda _: client.radius,
     "follow": follow,
     "setRadius": set_radius,

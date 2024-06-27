@@ -30,6 +30,25 @@ class Profile:
         name = "Anonymous" if name is None else name
         return Profile(id, name, [], [], [])
 
+@dataclass_json
+@dataclass
+class Attachment:
+    name: str
+    cid: str
+    # size: int #TODO, also #TODO: validate
+    #TODO: thumbnails/previews?
+    
+@dataclass_json
+@dataclass
+class Post:
+    content: str
+    attachments: list
+    timestamp: int
+    
+    def new(content, attachments=[], timestamp=None):
+        timestamp = int(time.time()) if timestamp is None else timestamp
+        return Post(content, attachments, timestamp)
+
 def make_public_post(key_name, profile, content, attachments=[]):
     #if attachments, upload all to ipfs first
     #TODO: catch failures
