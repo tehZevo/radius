@@ -4,7 +4,6 @@ import 'rc-slider/assets/index.css';
 
 import Box from "../box"
 import * as R from "../../services/radius"
-import {useClientRadius} from "../../hooks/radiusHooks"
 
 export default function RadiusSlider() {
   const [radius, setRadius] = useState([0, 0])
@@ -37,7 +36,7 @@ export default function RadiusSlider() {
     <Box>
       <div style={{width:"200px"}}>
         <Slider
-          range
+          // range
           min={0}
           max={5}
           step={1}
