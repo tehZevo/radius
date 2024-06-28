@@ -5,7 +5,7 @@ import {useDropzone} from 'react-dropzone'
 
 import * as radius from "../services/radius"
 import Box from "../components/box"
-import {fileToBase64} from "../utils/fileUtils"
+import {fileToBytes} from "../utils/fileUtils"
 
 const WORDS = ["fun", "awesome", "cool", "neat", "inspiring", "controversial", "interesting", "contentious"]
 
@@ -20,7 +20,7 @@ function FileDropzone({addFiles})
     {
       return {
         name: f.name,
-        data: await fileToBase64(f)
+        data: await fileToBytes(f)
       }
     }))
     

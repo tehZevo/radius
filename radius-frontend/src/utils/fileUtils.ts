@@ -39,6 +39,26 @@ export async function fileToText(file)
    })
 }
 
+export async function fileToBytes(file)
+{
+  return new Promise((res, rej) =>
+  {
+    var reader = new FileReader()
+
+    reader.onload = function()
+    {
+      res(reader.result)
+    }
+    
+    reader.onerror = function(error)
+    {
+      rej(error)
+    }
+
+    reader.readAsArrayBuffer(file)
+   })
+}
+
 export async function fileToJson(file)
 {
   return JSON.parse(await fileToText(file))

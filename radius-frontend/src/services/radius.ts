@@ -123,36 +123,30 @@ export const isFollowing = (follower, followee) => ppcl("isFollowing", { followe
 // export const getFile = (cid) => ppcl("getFile", cid)
 export const getFile = (cid) => ipfs.readBytes(cid)
 
-//configuration
-export const getRadius = () => ppcl("getRadius")
-export const setRadius = (radius) => ppcl("setRadius", radius)
-
 export async function createPost(content, attachments=[])
 {
-  // console.log("Posting message...")
-  // //convert attachments to bytes
-  // //TODO: reenable attachments
-  // // attachments = [(
-  // //     attachment["name"],
-  // //     base64.b64decode(attachment["data"])
-  // // ) for attachment in data["attachments"]]
-  // currentProfile.posts.push()
-  // client.make_public_post(data["content"], attachments)
-  // print("Done.")
+  console.log("Posting message...")
 
   //if attachments, upload all to ipfs first
   //TODO: catch failures
-  // if len(attachments) > 0:
-  //     print("Uploading", len(attachments), "attachments...")
-  const uploaded_attachments = []
-  // for name, data in attachments:
-  //     print("Uploading", name, "...")
-  //     cid = write(name, data)
-  //     uploaded_attachments.append(Attachment(name, cid))
+  const uploadedAttachments: Attachment[] = []
+  if(attachments.length > 0)
+  {
+    console.log("Uploading", attachments.length, "attachments...")
+  
+    for(var {name, data} of attachments)
+    {
+      console.log("Uploading", name, "...")
+      const cid = await ipfs.writeBytes(data)
+      uploadedAttachments.push({name, cid})
+    }
+    console.log("Done uploading attachments.")
+  }
+
   //upload post to ipfs
   const post = {
     content,
-    attachments: uploaded_attachments,
+    attachments: uploadedAttachments,
     timestamp: Math.floor(Date.now() / 1000)
   }
   const postCid = await ipfs.writeJson(post)
@@ -167,6 +161,8 @@ export async function createPost(content, attachments=[])
   await saveProfile(account, profile)
 
   saveCurrentProfile(profile)
+
+  console.log("Done posting message.")
 
   return postCid
 }
@@ -281,6 +277,14 @@ interface PostIdWithAuthor
 {
   postId: string
   author: Author
+}
+
+interface Attachment
+{
+  name: string
+  cid: string
+  //size: int #TODO, also #TODO: validate
+  //TODO: thumbnails/previews?
 }
 
 interface Attachment
