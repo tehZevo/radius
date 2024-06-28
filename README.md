@@ -3,6 +3,9 @@
 * All data is currently stored as dag-pb
 
 ## TODO
+- Fix login sometimes not setting key in kubo (retry until /key/ls returns our key?)
+- Create "groups" for private posts
+- Audio / video capture for audio / video messages (just attachments)
 - Store state in local storage and expose all radius functionality through a single useRadius hook?
 - Sort posts reverse-chronologically again
 - Potential for pinning your followee's posts

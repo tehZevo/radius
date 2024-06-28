@@ -85,16 +85,7 @@ def logout(_):
     global client
     client = None
 
-def follow(id):
-    #TODO: validate
-    print("Following", id, "...")
-    client.follow(id)
-    print("Done.")
     
-def wipe(sure):
-    print("Wiping profile...")
-    client.wipe(yes_i_really_mean_it=sure)
-    print("Done.")
     
 def get_following(_):
     return client.profile.following
@@ -151,10 +142,6 @@ def get_file(cid):
     return file
 
 ProtoPost({
-    "getRadius": lambda _: client.radius,
-    "follow": follow,
-    "setRadius": set_radius,
-    "getFeed": get_feed,
     "wipe": wipe,
     "post": post,
     "login": login,

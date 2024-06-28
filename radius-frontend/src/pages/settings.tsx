@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import * as radius from "../services/radius"
 
@@ -30,7 +29,7 @@ export default function Settings()
       return
     }
     
-    await radius.wipe(sure)
+    await radius.wipeAccount(sure)
     navigate("/")
   }
   
