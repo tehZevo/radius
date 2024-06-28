@@ -2,7 +2,7 @@ import nacl from "tweetnacl"
 import {pbkdf2Async} from "@noble/hashes/pbkdf2"
 import { sha256 } from '@noble/hashes/sha256';
 import {encode, decode} from "base64-arraybuffer"
-import * as ipfs from "./ipfs"
+import makeIpfs from "./ipfs"
 
 export function why(key)
 {
@@ -26,8 +26,9 @@ export function why(key)
 
 //TODO: get node id by importing key temporarily and save that to key data
 
-export async function generateIpfsKey()
+export async function generateIpfsKey(apiUrl)
 {
+    const ipfs = makeIpfs(apiUrl)
     const keyPair = nacl.sign.keyPair()
     var pem = why(keyPair.secretKey)
 

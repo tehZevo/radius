@@ -1,4 +1,5 @@
-import * as ipfs from "../ipfs"
+import makeIpfs from "./ipfsUtils"
+import * as account from "./account"
 
 export interface Author
 {
@@ -28,12 +29,13 @@ export interface Post
   timestamp: number
 }
 
-export const getPost = async (postId) => await ipfs.readJson(postId)
+export const getPost = async (postId) => await makeIpfs().readJson(postId)
 
-export const getFile = (cid) => ipfs.readBytes(cid)
+export const getFile = (cid) => makeIpfs().readBytes(cid)
 
 export async function createPost(content, attachments=[])
 {
+  const ipfs = makeIpfs()
   console.log("Posting message...")
 
   //if attachments, upload all to ipfs first
@@ -62,15 +64,12 @@ export async function createPost(content, attachments=[])
   const postCid = await ipfs.writeJson(post)
 
   //fetch current profile from localstorage
-  const profile = getCurrentProfile()
-  const account = getCurrentAccount()
+  const profile = account.getCurrentProfile()
   
   //save post cid in profile
   profile.publicPosts.push(postCid)
 
-  await saveProfile(account, profile)
-
-  saveCurrentProfile(profile)
+  await account.saveAndPublishProfile(profile)
 
   console.log("Done posting message.")
 

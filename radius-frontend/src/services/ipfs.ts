@@ -1,47 +1,23 @@
 import axios from "axios";
 import { v4 as uuid4 } from 'uuid';
 
-//TODO: UI to set this
-const IPFS_HOST = "http://127.0.0.1:5001"
-const API_URL = `${IPFS_HOST}/api/v0`
-
-export async function resolve(peerId, options={nocache: false, recordCount: 16, timeout: "5s"})
+//NOTE: expects pkcs8 pem formatted key
+const importKey = (apiUrl) => async (name, key) =>
 {
-  const nocache = options.nocache ? 1 : 0
-  const {timeout, recordCount} = options
-  const res = await axios.post(`${API_URL}/name/resolve/${peerId}?nocache=${nocache}&dht-record-count=${recordCount}&dht-timeout=${timeout}`)
-  //trim "/ipfs/"
-  const cid = res.data.Path.replace("/ipfs/", "")
-  return cid
+  const formData = new FormData()
+  formData.append("key", new Blob([key]), "key.pem")
+  const res = await axios.post(
+    `${apiUrl}/key/import/${name}?format=pem-pkcs8-cleartext`,
+    formData,
+    {headers: {"Content-Type": "multipart/form-data"}}
+  )
+  
+  return res
 }
 
-//TODO: generate peer id from public key instead of importing to ipfs first
-export async function getPeerIdFromKey(key)
+const removeKey = (apuIrl) => async (name) =>
 {
-  const name = uuid4()
-  //TODO: catch failures
-  const res = await importKey(name, key)
-  await removeKey(name)
-  return res.data.Id
-}
-
-export async function readBytes(cid)
-{
-  //TODO: idk why this works, but python reqests and docs say ?arg={cid}
-  //TODO: catch bad statuses
-  const res = await axios.post(`${API_URL}/cat/` + cid, null, {responseType: "arraybuffer"})
-  return res.data
-}
-
-export async function readJson(cid)
-{
-  const bytes = await readBytes(cid)
-  return JSON.parse(new TextDecoder().decode(bytes))
-}
-
-export async function removeKey(name)
-{
-  return await axios.post(`${API_URL}/key/rm/${name}`)
+  return await axios.post(`${apuIrl}/key/rm/${name}`)
     .then(() => true)
     .catch((e) => 
     {
@@ -51,42 +27,37 @@ export async function removeKey(name)
     })
 }
 
-//NOTE: expects pkcs8 pem formatted key
-export async function importKey(name, key)
+//TODO: generate peer id from public key instead of importing to ipfs first
+const getPeerIdFromKey = (apiUrl) => async (key) =>
 {
-  const formData = new FormData()
-  formData.append("key", new Blob([key]), "key.pem")
-  
-  const res = await axios.post(
-    `${API_URL}/key/import/${name}?format=pem-pkcs8-cleartext`,
-    formData,
-    {headers: {"Content-Type": "multipart/form-data"}}
-  )
-  
-  return res
+  const name = uuid4()
+  //TODO: catch failures
+  const res = await importKey(apiUrl)(name, key)
+  await removeKey(apiUrl)(name)
+  return res.data.Id
 }
 
-export async function publish(keyName, cid, options={})
+const readBytes = (apiUrl) => async (cid) =>
 {
-  var {lifetime, resolve} = options
-  resolve = resolve ? 1 : 0
-  cid = encodeURIComponent("/ipfs/" + cid)
-  //TODO: handle failure
-  const res = await axios.post(
-    `${API_URL}/name/publish?arg=${cid}&key=${keyName}&lifetime=${lifetime}&resolve=${resolve}`,
-  )
-  
-  return res.data.Name
+  //TODO: catch bad statuses
+  const res = await axios.post(`${apiUrl}/cat/` + cid, null, {responseType: "arraybuffer"})
+  return res.data
 }
 
-export async function writeBytes(bytes)
+const readJson = (apiUrl) => async (cid) =>
+{
+  const bytes = await readBytes(apiUrl)(cid)
+  return JSON.parse(new TextDecoder().decode(bytes))
+}
+
+const writeBytes = (apiUrl) => async (bytes) =>
 {
   const formData = new FormData()
   formData.append("file", new Blob([bytes]))
 
   //TODO: handle failure
   const res = await axios.post(
-    `${API_URL}/add`,
+    `${apiUrl}/add`,
     formData,
     {headers: {"Content-Type": "multipart/form-data"}}
   )
@@ -94,9 +65,47 @@ export async function writeBytes(bytes)
   return res.data.Hash
 }
 
-export async function writeJson(data)
+const writeJson = (apiUrl) => async (data) =>
 {
   data = JSON.stringify(data)
   data = new TextEncoder().encode(data)
-  return await writeBytes(data)
+  return await writeBytes(apiUrl)(data)
 }
+
+const resolve = (apiUrl) => async (peerId, options={nocache: false, recordCount: 16, timeout: "5s"}) =>
+{
+  const nocache = options.nocache ? 1 : 0
+  const {timeout, recordCount} = options
+  const res = await axios.post(`${apiUrl}/name/resolve/${peerId}?nocache=${nocache}&dht-record-count=${recordCount}&dht-timeout=${timeout}`)
+  //trim "/ipfs/"
+  const cid = res.data.Path.replace("/ipfs/", "")
+  return cid
+}
+
+const publish = (apiUrl) => async (keyName, cid, options={}) => 
+{
+  var {lifetime, resolve} = options
+  resolve = resolve ? 1 : 0
+  cid = encodeURIComponent("/ipfs/" + cid)
+  //TODO: handle failure
+  const res = await axios.post(
+    `${apiUrl}/name/publish?arg=${cid}&key=${keyName}&lifetime=${lifetime}&resolve=${resolve}`,
+  )
+  
+  return res.data.Name
+}
+
+const ipfs = (apiUrl) =>
+({
+  importKey: importKey(apiUrl),
+  removeKey: removeKey(apiUrl),
+  getPeerIdFromKey: getPeerIdFromKey(apiUrl),
+  readBytes: readBytes(apiUrl),
+  readJson: readJson(apiUrl),
+  writeBytes: writeBytes(apiUrl),
+  writeJson: writeJson(apiUrl),
+  resolve: resolve(apiUrl),
+  publish: publish(apiUrl),
+})
+
+export default ipfs

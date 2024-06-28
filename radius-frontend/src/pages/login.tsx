@@ -1,5 +1,4 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useLocalStorage } from 'usehooks-ts'
 import * as radius from "../services/radius"
 
 export default function Login()
@@ -7,7 +6,6 @@ export default function Login()
   const {state} = useLocation();
   const {identity} = state
   const navigate = useNavigate();
-  const [value, setValue] = useLocalStorage(radius.PROFILE_STORAGE_KEY, 0)
   
   async function onSubmit(e)
   {

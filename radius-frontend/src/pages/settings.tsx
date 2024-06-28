@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import * as radius from "../services/radius"
+import Box from "../components/box"
 
-export default function Settings()
+function ProfileSettings()
 {
   const navigate = useNavigate();
   
@@ -34,19 +35,37 @@ export default function Settings()
   }
   
   return (
-    <>
-      <div>
-        <button onClick={logout}>Log out</button>
-      </div>
+    <Box direction="column">
+      Profile settings
+      <div><button onClick={logout}>Log out</button></div>
       <form onSubmit={setName}>
         Name: <input name="name" type="text" required />
         <button type="submit">Update</button>
       </form>
       <form onSubmit={wipe}>
-        Wipe account <input name="yes-im-really-sure" type="checkbox" required /> --yes-im-really-sure
+        Wipe account: <input name="yes-im-really-sure" type="checkbox" required /> --yes-im-really-sure
         <button type="submit">Delete everything</button>
       </form>
-    </>
+    </Box>
+  )
+}
+
+function SystemSettings()
+{
+  return (
+    <Box direction="column">
+      System settings
+    </Box>
+  )
+}
+
+export default function Settings()
+{
+  return (
+    <Box raised={false}>
+      <ProfileSettings />
+      <SystemSettings />
+    </Box>
   )
 }
 

@@ -22,11 +22,11 @@ jobs:
         with:
           working-directory: ./radius-frontend
 
-      - name: Build project
+      - name: Build frontend
         working-directory: ./radius-frontend
         run: npm run build
         
-      - name: Upload production-ready build files
+      - name: Save frontend artifact
         uses: actions/upload-artifact@v3
         with:
           name: radius-build
@@ -39,7 +39,7 @@ jobs:
     if: github.ref == 'refs/heads/master'
 
     steps:
-      - name: Download artifact
+      - name: Download frontend artifact
         uses: actions/download-artifact@v3
         with:
           name: radius-build

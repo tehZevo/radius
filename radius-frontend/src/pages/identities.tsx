@@ -6,6 +6,7 @@ import * as keys from "../services/keys"
 import IdentityCard from "../components/identityCard"
 import {fileToJson} from "../utils/fileUtils"
 import Box from "../components/box"
+import { loadKuboApiUrl } from '../services/radius/settings';
 
 function IdentityDropzone({setIdentity})
 {
@@ -62,7 +63,7 @@ function CreateIdentity()
     const name = formData.get("name")
     const password = formData.get("password")
     
-    const {key, id} = await keys.generateIpfsKey()
+    const {key, id} = await keys.generateIpfsKey(loadKuboApiUrl())
     const encryptedKey = await keys.encryptIpfsKey(key, password)
     await radius.importAccount(name, id, encryptedKey)
 

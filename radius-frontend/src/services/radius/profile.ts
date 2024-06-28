@@ -1,4 +1,4 @@
-import * as ipfs from "../ipfs"
+import makeIpfs from "./ipfsUtils"
 import * as config from "./config"
 import {Post} from "./post"
 
@@ -13,6 +13,7 @@ export interface Profile
 
 export const getProfile = async (userId) =>
 {
+  const ipfs = makeIpfs()
   const cid = await ipfs.resolve(userId, config.DEFAULT_RESOLVE_OPTIONS)
   return await ipfs.readJson(cid)
 }

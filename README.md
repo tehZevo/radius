@@ -3,6 +3,8 @@
 * All data is currently stored as dag-pb
 
 ## TODO
+- More spinners (when creating profile, when posting, etc)
+- Reduce number of times we have to load data from local storage (Client objects stored in React state?)
 - Readd tsc to build
 - Fix login sometimes not setting key in kubo (retry until /key/ls returns our key?)
 - Create "groups" for private posts
