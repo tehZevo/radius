@@ -29,7 +29,6 @@ jobs:
       - name: Save frontend artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          name: radius-build
           path: ./radius-frontend/dist
 
   deploy:
@@ -37,6 +36,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
+    
+    permissions:
+      pages: write
+      id-token: write
 
     steps:
       - name: Deploy to GitHub Pages
