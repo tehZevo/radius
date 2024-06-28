@@ -9,7 +9,7 @@ export default function CreatePostPage()
   async function onPost(postId)
   {
     const userId = await radius.getUserId()
-    navigate("/profile/" + userId)
+    navigate("/radius/profile" + userId)
   }
   
   return (

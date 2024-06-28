@@ -14,7 +14,7 @@ export default function Login()
     const formData = new FormData(e.target)
     const password = formData.get("password")
     await radius.login(identity, password)
-    navigate("/feed")
+    navigate("/radius/feed")
   }
   
   return (

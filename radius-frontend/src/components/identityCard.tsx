@@ -8,7 +8,7 @@ export default function IdentityCard({name, id})
   
   function login()
   {
-    navigate("/login", {state: {"identity": name}})
+    navigate("/radius/login", {state: {"identity": name}})
   }
   
   //TODO: get id from server

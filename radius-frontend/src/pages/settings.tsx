@@ -10,7 +10,7 @@ function ProfileSettings()
   async function logout()
   {
     await radius.logout()
-    navigate("/")
+    navigate("/radius")
   }
   
   async function setName(e)
@@ -32,7 +32,7 @@ function ProfileSettings()
     }
     
     await radius.wipeAccount(sure)
-    navigate("/")
+    navigate("/radius")
   }
   
   return (

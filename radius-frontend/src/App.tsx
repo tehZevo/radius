@@ -37,7 +37,9 @@ const router = createBrowserRouter([
     path: "/create-post",
     element: <CreatePost />,
   },
-]);
+], {
+  basename: import.meta.env.BASE_URL
+});
 
 export default function App() {
   return (
