@@ -1,5 +1,6 @@
 import makeIpfs from "./ipfsUtils"
 import * as account from "./account"
+import { getPublicFeed, loadRadius } from "."
 
 export interface Author
 {
@@ -27,13 +28,30 @@ export interface Post
   content: string
   attachments: Attachment[]
   timestamp: number
+  replyTo: string
 }
 
-export const getPost = async (postId) => await makeIpfs().readJson(postId)
+export async function getPost(postId): Promise<Post>
+{
+  return await makeIpfs().readJson(postId)
+}
 
 export const getFile = (cid) => makeIpfs().readBytes(cid)
 
-export async function createPost(content, attachments=[])
+export async function getReplies(postId)
+{
+  //TODO: this is expensive, have to get all known posts
+  const radius = loadRadius()
+  const userId = account.getCurrentAccount()
+  const allPosts = await getPublicFeed(userId, radius)
+  const loadedPosts = await Promise.all(allPosts.map(async (e) => [e, await getPost(e.postId)]))
+  //TODO: shame we throw away the loaded post (this is because the Post component currently takes an id and loads itself)
+  const replies = loadedPosts.filter(([pwa, p]) => p.replyTo == postId).map(([pwa, p]) => pwa)
+
+  return replies
+}
+
+export async function createPost(content, attachments=[], replyTo=null)
 {
   const ipfs = makeIpfs()
   console.log("Posting message...")
@@ -59,8 +77,10 @@ export async function createPost(content, attachments=[])
   const post = {
     content,
     attachments: uploadedAttachments,
-    timestamp: Math.floor(Date.now() / 1000)
+    timestamp: Math.floor(Date.now() / 1000),
+    replyTo
   }
+  
   const postCid = await ipfs.writeJson(post)
 
   //fetch current profile from localstorage

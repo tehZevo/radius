@@ -9,7 +9,7 @@ import Login from "./pages/login"
 import Profile from "./pages/profile"
 import Settings from "./pages/settings"
 import Feed from "./pages/feed"
-import CreatePost from "./pages/createPost"
+import CreatePost from "./pages/createPostPage"
 import TopBar from "./components/topBar"
 
 const router = createBrowserRouter([

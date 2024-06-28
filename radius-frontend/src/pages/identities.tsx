@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
-import {useDropzone} from 'react-dropzone'
 import * as radius from "../services/radius"
 import * as keys from "../services/keys"
 import IdentityCard from "../components/identityCard"
 import {fileToJson} from "../utils/fileUtils"
 import Box from "../components/box"
 import { loadKuboApiUrl } from '../services/radius/settings';
+import FileDropzone from '../components/FileDropzone';
 
-function IdentityDropzone({setIdentity})
+function ImportIdentity()
 {
+  const [identity, setIdentity] = useState()
+
   const onDrop = async files =>
   {
     var identity = files[0]
@@ -17,36 +19,21 @@ function IdentityDropzone({setIdentity})
     
     setIdentity(identity)
   }
-  
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
-
-  //TODO: only allow single
-  return (
-    <Box>
-      <div style={{width: "200px", height: "50px", cursor: "pointer"}} {...getRootProps()}>
-        <input {...getInputProps()} />
-        {
-          isDragActive ?
-            <p>Drop identity here...</p> :
-            <p>+ Import identity</p>
-        }
-      </div>
-    </Box>
-  )
-}
-
-function ImportIdentity()
-{
-  const [identity, setIdentity] = useState()
 
   async function importIdentity()
   {
-    await radius.importAccount(identity)
+    const {name, id, key} = identity
+    console.log("TODO: check these:", name, id, key)
+    await radius.importAccount(name, id, key)
   }
 
   return (
-    <Box direction="column" raised={true}>
-      <IdentityDropzone setIdentity={setIdentity}/>
+    <Box direction="column">
+      <FileDropzone
+        onDrop={onDrop}
+        dragText="Drop identity here..."
+        defaultText="+ Import identity"
+      />
       {identity ? <button onClick={importIdentity}>Import</button> : null}
     </Box>
   )

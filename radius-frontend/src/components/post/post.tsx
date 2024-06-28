@@ -6,11 +6,28 @@ import DistanceIcon from "../profile/distanceIcon"
 import Avatar from "../profile/avatar"
 import PostAttachment from "./postAttachment"
 import * as radius from "../../services/radius"
+import { useRadius } from "../../hooks/radiusHooks"
 import { PuffLoader } from "react-spinners"
+import CreatePostModal from "./createPostModal"
+
+function ReplyButton({postId})
+{
+  function openReply()
+  {
+
+  }
+
+  return (
+    // <button onClick={openReply}>Reply</button>
+    <CreatePostModal />
+  )
+}
 
 export default function Post({postId, author})
 {
   const [post, setPost] = useState()
+  const {useReplies} = useRadius()
+  const replies = useReplies(postId)
   
   const authorInfo = author ? (
     <Box raised={false}>
@@ -45,6 +62,11 @@ export default function Post({postId, author})
           </Box>
           <Box raised={false}>
             <EmojiPicker open={false} reactions={["1f44d", "1f44e"]} reactionsDefaultOpen={true} onReactionClick={handleReaction} onEmojiClick={handleReaction} lazyLoadEmojis={true} emojiStyle="twitter"/>
+          </Box>
+          <ReplyButton postId={postId} />
+          <Box direction="column" raised={false}>
+            {/* TODO: test */}
+            {replies.map((e) => e.postId)}
           </Box>
         </>
       ) : spinner}

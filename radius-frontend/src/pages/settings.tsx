@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import * as radius from "../services/radius"
+import { useRadius } from '../hooks/radiusHooks';
 import Box from "../components/box"
 
 function ProfileSettings()
@@ -52,9 +53,24 @@ function ProfileSettings()
 
 function SystemSettings()
 {
+  const {useKuboApiUrl} = useRadius()
+  const [apiUrl, setApiUrl] = useKuboApiUrl()
+  
+  async function updateApiUrl(e)
+  {
+    e.preventDefault()
+    const formData = new FormData(e.target)
+    const url = formData.get("api-url")
+    setApiUrl(url)
+  }
+
   return (
     <Box direction="column">
       System settings
+      <form onSubmit={updateApiUrl}>
+        Kubo API url: <input name="api-url" type="text" defaultValue={apiUrl} required />
+        <button type="submit">Update</button>
+      </form>
     </Box>
   )
 }

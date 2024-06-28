@@ -27,7 +27,7 @@ jobs:
         run: npm run build
         
       - name: Save frontend artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-pages-artifact@v3
         with:
           name: radius-build
           path: ./radius-frontend/dist
@@ -39,14 +39,6 @@ jobs:
     if: github.ref == 'refs/heads/master'
 
     steps:
-      - name: Download frontend artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: radius-build
-          path: ./dist
-
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+        id: deployment
+        uses: actions/deploy-pages@v4
