@@ -1,6 +1,7 @@
 import {
-  createBrowserRouter,
+  createHashRouter,
   RouterProvider,
+  Outlet,
 } from "react-router-dom";
 import './App.css'
 
@@ -12,39 +13,53 @@ import Feed from "./pages/feed"
 import CreatePost from "./pages/createPostPage"
 import TopBar from "./components/topBar"
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
-    element: <Identities />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/profile/:userId",
-    element: <Profile />,
-  },
-  {
-    path: "/settings",
-    element: <Settings />,
-  },
-  {
-    path: "/feed",
-    element: <Feed />,
-  },
-  {
-    path: "/create-post",
-    element: <CreatePost />,
-  },
-], {
-  basename: import.meta.env.BASE_URL
-});
+    element: <NavbarWrapper />,
+    children:
+    [
+      {
+        path: "/",
+        element: <Identities />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/profile/:userId",
+        element: <Profile />,
+      },
+      {
+        path: "/settings",
+        element: <Settings />,
+      },
+      {
+        path: "/feed",
+        element: <Feed />,
+      },
+      {
+        path: "/create-post",
+        element: <CreatePost />,
+      },
+    ]
+  }
+]);
+
+function NavbarWrapper()
+{
+  return (
+    <>
+      <TopBar/>
+      <Outlet/>
+    </>
+  )
+}
 
 export default function App() {
   return (
     <>
-      <TopBar />
       <RouterProvider router={router} />
     </>
   );
